@@ -1,0 +1,20 @@
+$ tsx scripts/run-scenario.ts
+PASS  A: scenario stops in awaiting_approval
+PASS  A: duty contact on Monday is Priya
+PASS  A: nothing sent before approval
+PASS  A: protocol 2025-11-25
+PASS  B: retry replays all three writes
+PASS  B: retry returns the same ids
+PASS  B: no new rows after retry
+PASS  C: cross-household approval denied (FORBIDDEN)
+PASS  D: caregiver approval denied (FORBIDDEN, role)
+PASS  E: approval recorded
+PASS  E: delivery is simulated only
+PASS  E: same-key approve replays
+PASS  E: second approval with new key refused (ALREADY_DECIDED)
+PASS  E: exactly one simulated send
+PASS  F: no pending approvals left
+PASS  F: appointment request handed off (no longer open)
+PASS  F: morning schedule shows a report; evening shows neutral no-report text
+
+17/17 scenario checks passed

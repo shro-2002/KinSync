@@ -1,0 +1,11 @@
+$ pnpm eval:live            (no flag, fake key in env)
+$ tsx scripts/live-eval.ts
+Refusing to run: live evaluation calls a paid API. Re-run with --live to confirm.
+[ELIFECYCLE] Command failed with exit code 2.
+exit=2
+
+$ pnpm eval:live -- --live   (no credentials)
+$ tsx scripts/live-eval.ts -- --live
+Refusing to run: no API credentials configured (set ANTHROPIC_API_KEY or ANTHROPIC_AUTH_TOKEN in your shell; it is never printed).
+[ELIFECYCLE] Command failed with exit code 2.
+exit=2

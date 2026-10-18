@@ -1,0 +1,17 @@
+$ tsx scripts/handoff-demo.ts
+PASS  A: spoken request -> proposal, stops awaiting a human
+PASS  B: model attempts at decide_handoff / respond_to_handoff are policy_denied HUMAN_ONLY_TOOL
+PASS  C: handoff is PENDING_APPROVAL, requested by Ravi, Priya on duty, proposed Arjun
+PASS  D: viewer cannot approve (FORBIDDEN)
+PASS  D: recipient cannot approve their own handoff (FORBIDDEN)
+PASS  D: recipient cannot accept before approval (INVALID_TRANSITION)
+PASS  E: coordinator approves -> PENDING_ACCEPTANCE (not complete yet)
+PASS  E: approving twice with the same key replays, no second transition
+PASS  F: approver cannot also accept for the recipient (FORBIDDEN)
+PASS  G: recipient accepts -> COMPLETED
+PASS  G: a second decision on a finished handoff is INVALID_TRANSITION
+PASS  H: after restart the handoff is COMPLETED with a 3-entry history
+PASS  I: nothing was sent or booked (no outbox rows, no drafts)
+PASS  I: audit trail records the denials and the successes
+
+14/14 handoff demo checks passed

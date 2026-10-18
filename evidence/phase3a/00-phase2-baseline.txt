@@ -1,0 +1,5 @@
+$ tsc --noEmit
+typecheck-ok
+ Test Files  5 passed (5)
+      Tests  79 passed (79)
+17/17 scenario checks passed

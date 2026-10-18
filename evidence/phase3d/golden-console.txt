@@ -1,0 +1,3 @@
+$ tsx scripts/golden-trace.ts
+golden: pass=true violations=0 stop=awaiting_approval; retry=replayed,replayed,ok,replayed
+golden exit=0

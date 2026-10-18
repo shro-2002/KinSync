@@ -1,0 +1,94 @@
+# MCP Inspector 2.10.1 CLI (2026-10-10T18:17:23Z)
+
+$ MCP_CATALOG_PATH=<scratch> npx -y @modelcontextprotocol/inspector@2.10.1 --cli http://127.0.0.1:3333/mcp --method tools/list
+{
+  "tools": [
+    {
+      "name": "log_event",
+      "title": "Log care event",
+      "description": "Record one household care event (synthetic data only), e.g. a medication taken or a meal eaten. Returns the stored event.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "medication",
+              "meal",
+              "symptom",
+              "appointment",
+              "note"
+            ],
+            "description": "category of the event"
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "short free-text description"
+          }
+        },
+        "required": [
+          "kind",
+          "note"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "note",
+          "createdAt"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      }
+    }
+  ]
+}
+exit=0
+
+$ MCP_CATALOG_PATH=<scratch> npx -y @modelcontextprotocol/inspector@2.10.1 --cli http://127.0.0.1:3333/mcp --method tools/call --tool-name log_event --tool-arg kind=note note=synthetic-inspector-NONCE-I1
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Logged note event #2: synthetic-inspector-NONCE-I1"
+    }
+  ],
+  "structuredContent": {
+    "id": 2,
+    "kind": "note",
+    "note": "synthetic-inspector-NONCE-I1",
+    "createdAt": "2026-10-10T18:17:26.101Z"
+  }
+}
+exit=0
+
+$ MCP_CATALOG_PATH=<scratch> npx -y @modelcontextprotocol/inspector@2.10.1 --cli http://127.0.0.1:3333/mcp --method resources/read --uri careloop://events/recent
+{
+  "contents": [
+    {
+      "uri": "careloop://events/recent",
+      "mimeType": "application/json",
+      "text": "[{\"id\":2,\"kind\":\"note\",\"note\":\"synthetic-inspector-NONCE-I1\",\"createdAt\":\"2026-10-10T18:17:26.101Z\"},{\"id\":1,\"kind\":\"medication\",\"note\":\"synthetic: took morning pills NONCE-E1\",\"createdAt\":\"2026-10-10T18:15:44.516Z\"}]"
+    }
+  ]
+}
+exit=0

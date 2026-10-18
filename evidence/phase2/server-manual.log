@@ -1,0 +1,4 @@
+$ pnpm -s build:ui && tsx src/main.ts
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (590.7 KiB)
+[careloop] MCP server on http://127.0.0.1:3333/mcp (db: <tmp>/phase2-manual.db, cors: http://localhost:8080, default actor: none, pid 98526)

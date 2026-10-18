@@ -1,0 +1,2 @@
+$ tsx scripts/offline-turn.ts
+offline turn: stop=awaiting_approval reply=passed "I've recorded what you told me. I've prepared an appointment request for the family. Nothing has been booked. I've drafted a message to Priya. It is waiting for approval and has not been sent." golden=true cost=null

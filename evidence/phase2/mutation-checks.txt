@@ -1,0 +1,12 @@
+M1 household check removed:
+      Tests  2 failed | 77 passed (79)
+M2 role check removed:
+      Tests  2 failed | 77 passed (79)
+M3 idempotency lookup disabled:
+      Tests  4 failed | 75 passed (79)
+M4 no-report phrase says missed:
+      Tests  2 failed | 77 passed (79)
+M5 approval does not require pending:
+      Tests  1 failed | 78 passed (79)
+RESTORED:
+      Tests  79 passed (79)

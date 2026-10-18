@@ -1,0 +1,27 @@
+$ pnpm -s build:ui && tsx scripts/demo.ts
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (605.6 KiB)
+
+KinSync demo (built from the CareLoop codebase) - an MCP Apps experience in a SIMULATED Alexa+ workflow, not native Alexa+.
+  MCP server      http://127.0.0.1:3333/mcp   (database data/kinsync-demo.db, fresh synthetic seed)
+  Dashboard       http://localhost:8080/index.html?server=careloop&tool=show_care_dashboard&call=true
+  Browser session acts as Priya (coordinator). The dashboard's identity switcher is SIMULATED - demo only, not authentication.
+  Demo clock      starts Mon 2026-10-12 09:30 Asia/Kolkata (rota: Priya on duty) and runs in real time; now 2026-10-12T04:00:00.243Z
+
+================ SIMULATED ALEXA+ TURN ================
+Ravi (care recipient) says:  "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?"
+Planner: DETERMINISTIC rule-based planner (not an LLM) - reproducible, $0
+Model-facing tools: propose and read only. decide_handoff and respond_to_handoff are human-only and are never offered.
+
+  tool 1: get_household_status {"household_id":"hh_rao"}
+          -> ok
+  tool 2: propose_handoff {"task_description":"I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?","proposed_recipient":"mem_arjun","household_id":"hh_rao"}
+          -> ok
+
+KinSync replies: "I've prepared a proposal for Arjun to take over this task. A person needs to approve it, and Arjun needs to accept it, before anything changes. Nothing has been sent or arranged."
+Turn stop: awaiting_approval
+Nothing was sent, booked or dispatched. A human must approve, then the recipient must accept.
+=======================================================
+
+Next, in the dashboard: Refresh -> Approve (as Priya) -> switch identity to Arjun (SIMULATED) -> Accept.
+Ctrl+C to stop.

@@ -1,0 +1,91 @@
+{
+  "planner": "ollama/chat-tool-use/v1",
+  "model": "llama3.1",
+  "result": {
+    "stop": "awaiting_approval",
+    "reply": {
+      "action": "passed",
+      "violations": [],
+      "text": "No, nothing has been sent or arranged yet. This is just a proposed handoff waiting for approval. \n\nWould you like me to help with anything else related to your clinic visit?",
+      "originalText": "No, nothing has been sent or arranged yet. This is just a proposed handoff waiting for approval. \n\nWould you like me to help with anything else related to your clinic visit?",
+      "source": "model"
+    },
+    "trace": {
+      "format": "careloop.tool-trace/v1",
+      "turn_id": "turn_ollama0000001",
+      "actor_member_id": "mem_ravi",
+      "household_id": "hh_rao",
+      "utterance_sha256": "a56d29875c850429bbbdb17f2794febe7eb0e3bdd562e6bf626e6968794fbc05",
+      "planner": "ollama/chat-tool-use/v1",
+      "steps": [
+        {
+          "seq": 1,
+          "tool": "propose_handoff",
+          "model_args": {
+            "task_description": "I need help getting to my clinic visit on Thursday.",
+            "proposed_recipient": "Arjun"
+          },
+          "effective_args": {
+            "task_description": "I need help getting to my clinic visit on Thursday.",
+            "proposed_recipient": "Arjun",
+            "household_id": "hh_rao",
+            "idempotency_key": "turn_ollama0000001.bb494b0ee40b9d17e25808a7"
+          },
+          "idempotency_key": "turn_ollama0000001.bb494b0ee40b9d17e25808a7",
+          "decision": "executed",
+          "policy_reason": null,
+          "discarded_args": [],
+          "outcome": "ok",
+          "error_code": null
+        }
+      ],
+      "stop_reason": "awaiting_approval"
+    },
+    "modelIterations": 2,
+    "usage": {
+      "iterations": [
+        {
+          "iteration": 1,
+          "model": "llama3.1",
+          "stop": "tool_use",
+          "toolCalls": 1,
+          "latencyMs": 58117,
+          "inputTokens": 1442,
+          "outputTokens": 39,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        {
+          "iteration": 2,
+          "model": "llama3.1",
+          "stop": "end_turn",
+          "toolCalls": 0,
+          "latencyMs": 18451,
+          "inputTokens": 745,
+          "outputTokens": 38,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        }
+      ],
+      "totals": {
+        "inputTokens": 2187,
+        "outputTokens": 77,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0
+      },
+      "estimatedCostUsd": null
+    },
+    "providerError": null
+  },
+  "evaluation": {
+    "contract": "kinsync.golden/care-handoff/v1",
+    "pass": true,
+    "violations": []
+  },
+  "handoffs": [
+    {
+      "status": "PENDING_APPROVAL",
+      "to_member_id": "mem_arjun"
+    }
+  ]
+}

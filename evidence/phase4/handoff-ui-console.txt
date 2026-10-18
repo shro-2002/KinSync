@@ -1,0 +1,26 @@
+$ pnpm -s build:ui && tsx scripts/verify-handoff-ui.ts
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (598.2 KiB)
+PASS  spoken request became a PENDING_APPROVAL proposal (planner can only propose)  "I've prepared a proposal for Arjun to take over this task. A person needs to approve it, and Arjun needs to accept it, before anything changes. Nothing has been sent or arranged."
+PASS  card shows the task in the person's words, requester, duty contact and proposed recipient  "\"I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?\"PENDING APPROVALAsked by Ravi · on duty now: Priya · proposed: Arjun✓ Propo"
+PASS  status is clearly PENDING APPROVAL and says nothing has been sent
+PASS  simulated-actor switcher is visibly labeled SIMULATED, not authentication  "SIMULATED identity - demo only, not authentication. Acting as:"
+PASS  starts as the session identity (Priya, coordinator): Approve and Reject enabled
+PASS  no Accept/Decline offered while approval is pending
+PASS  as Arjun (the recipient): Approve is disabled with an explanation  {"disabled":true,"title":"Only the care recipient or the coordinator can approve, and not the person who would take over. Arjun cannot."}
+PASS  forced approve as Arjun refused by the SERVER (FORBIDDEN); nothing changed  "✕ Server refused: FORBIDDEN - Role caregiver may not decide_handoff"
+PASS  the refusal is in the audit trail as a denied decide_handoff by Arjun
+PASS  as Meera (viewer): Approve disabled
+PASS  Ravi (care recipient) approved: persisted as PENDING_ACCEPTANCE
+PASS  approval recorded as SIMULATED Ravi acting through Priya's session  {"event":"approve","who":"mem_ravi","mode":"simulated","by":"mem_priya"}
+PASS  card says approved but Arjun is not responsible until he accepts
+PASS  Approve/Reject are gone; Accept/Decline are shown
+PASS  as Priya (not the recipient): Accept disabled
+PASS  forced accept as Priya refused by the SERVER; still PENDING_ACCEPTANCE
+PASS  Arjun accepted: persisted as COMPLETED, shown in history
+PASS  completed entry never claims care was given  "COMPLETED: \"I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?\" - Arjun accepted responsibility for this task. This records a family agreement only; it does not confir"
+PASS  transitions: propose(Ravi) approve(Ravi, simulated) accept(Arjun, simulated)  [{"event":"propose","who":"mem_ravi","mode":"session","by":null},{"event":"approve","who":"mem_ravi","mode":"simulated","by":"mem_priya"},{"event":"accept","who":"mem_arjun","mode":"simulated","by":"mem_priya"}]
+PASS  nothing was sent: simulated outbox empty, no notification drafts
+PASS  after server restart + page reload the COMPLETED handoff and its 3-step audit trail are still shown  "COMPLETED: \"I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?\" - Arjun accepted responsibility for this task. This records a family agreement only; it does not confirm any care was provided.Audit trail (3)2026-10-12T04:00:00.0"
+
+21/21 handoff UI checks passed

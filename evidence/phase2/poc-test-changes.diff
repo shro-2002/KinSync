@@ -1,0 +1,208 @@
+--- evidence/phase2/tests-before/e2e.test.ts.before	2026-10-11 00:59:51
++++ test/e2e.test.ts	2026-10-11 00:59:51
+@@ -1,9 +1,18 @@
+ import { afterEach, describe, expect, it } from 'vitest';
+ 
+-import { connect, readRecentEvents } from '../src/client.js';
++import type { Client } from '@modelcontextprotocol/client';
++
++import { connect } from '../src/client.js';
+ import { EXPECTED_TOOLS, SPEC_VERSION, startHarness, type Harness } from './helpers.js';
+ 
+ let harness: Harness | undefined;
++
++const RAVI = 'mem_ravi';
++const recentNotes = async (client: Client) => {
++    const res = await client.callTool({ name: 'get_household_status', arguments: { household_id: 'hh_rao' } });
++    return (res.structuredContent as { recent_events: Array<{ note: string }> }).recent_events.map(e => e.note);
++};
++const eventCount = (h: Harness) => (h.db.prepare('SELECT COUNT(*) AS n FROM care_events').get() as { n: number }).n;
+ afterEach(async () => {
+     await harness?.stop();
+     harness = undefined;
+@@ -34,50 +43,58 @@
+         for (const record of rest) expect(record.requestHeaders['mcp-protocol-version']).toBe(SPEC_VERSION);
+     });
+ 
+-    it('log_event stores a synthetic event and returns it as structured content', async () => {
++    it('record_care_event stores a synthetic event and returns it as structured content', async () => {
+         harness = await startHarness();
+-        const { client } = await connect(harness.url);
++        const { client } = await connect(harness.url, { actor: RAVI });
+ 
+-        const result = await client.callTool({ name: 'log_event', arguments: { kind: 'meal', note: 'synthetic: ate lunch' } });
++        const result = await client.callTool({
++            name: 'record_care_event',
++            arguments: { household_id: 'hh_rao', idempotency_key: 'e2e-meal-0001', kind: 'meal', note: 'synthetic: ate lunch' }
++        });
+ 
+         expect(result.isError ?? false).toBe(false);
+-        expect(result.structuredContent).toMatchObject({ kind: 'meal', note: 'synthetic: ate lunch' });
+-        expect(harness.store.recent(1)[0]?.note).toBe('synthetic: ate lunch');
++        expect((result.structuredContent as { event: object }).event).toMatchObject({ kind: 'meal', note: 'synthetic: ate lunch' });
++        expect(await recentNotes(client)).toContain('synthetic: ate lunch');
+         await client.close();
+     });
+ 
+-    it('rejects invalid log_event input instead of storing it', async () => {
++    it('rejects invalid record_care_event input instead of storing it', async () => {
+         harness = await startHarness();
+-        const { client } = await connect(harness.url);
++        const { client } = await connect(harness.url, { actor: RAVI });
+ 
+         let rejected = false;
+         try {
+-            const result = await client.callTool({ name: 'log_event', arguments: { kind: 'not-a-kind', note: '' } });
++            const result = await client.callTool({
++                name: 'record_care_event',
++                arguments: { household_id: 'hh_rao', idempotency_key: 'e2e-bad-0001', kind: 'not-a-kind', note: '' }
++            });
+             rejected = result.isError === true;
+         } catch {
+             rejected = true;
+         }
+ 
+         expect(rejected).toBe(true);
+-        expect(harness.store.recent(10)).toHaveLength(0);
++        expect(eventCount(harness)).toBe(0);
+         await client.close();
+     });
+ 
+     it('persists events to disk: a fresh server and fresh client read what an earlier session wrote', async () => {
+         harness = await startHarness();
+         const { dbPath } = harness;
+-        const writer = await connect(harness.url);
+-        await writer.client.callTool({ name: 'log_event', arguments: { kind: 'medication', note: 'synthetic NONCE-T1' } });
++        const writer = await connect(harness.url, { actor: RAVI });
++        await writer.client.callTool({
++            name: 'record_care_event',
++            arguments: { household_id: 'hh_rao', idempotency_key: 'e2e-persist-01', kind: 'medication', note: 'synthetic NONCE-T1' }
++        });
+         await writer.transport.terminateSession();
+         await writer.client.close();
+         await harness.stop();
+ 
+         harness = await startHarness(dbPath);
+-        const reader = await connect(harness.url);
+-        const events = await readRecentEvents(reader.client);
++        const reader = await connect(harness.url, { actor: RAVI });
+ 
+         expect(reader.transport.sessionId).not.toBe(writer.transport.sessionId);
+-        expect(events.some(e => e.note === 'synthetic NONCE-T1')).toBe(true);
++        expect(await recentNotes(reader.client)).toContain('synthetic NONCE-T1');
+         await reader.client.close();
+     });
+ });
+--- evidence/phase2/tests-before/mcp-apps.test.ts.before	2026-10-11 00:59:51
++++ test/mcp-apps.test.ts	2026-10-11 01:00:10
+@@ -18,7 +18,7 @@
+ interface DashboardData {
+     total: number;
+     counts: Record<string, number>;
+-    events: Array<{ id: number; note: string }>;
++    events: Array<{ id: string; note: string }>;
+ }
+ 
+ describe('MCP Apps: resource registration and discovery', () => {
+@@ -73,12 +73,15 @@
+ });
+ 
+ describe('MCP Apps: data flow', () => {
+-    it('tool result carries the persisted events, and a later log_event is visible on the next call', async () => {
++    it('tool result carries the persisted events, and a later record_care_event is visible on the next call', async () => {
+         harness = await startHarness();
+-        const { client } = await connect(harness.url);
++        const { client } = await connect(harness.url, { actor: 'mem_ravi' });
+ 
+         const before = (await client.callTool({ name: 'show_care_dashboard', arguments: {} })).structuredContent as DashboardData;
+-        await client.callTool({ name: 'log_event', arguments: { kind: 'meal', note: 'synthetic NONCE-UI1' } });
++        await client.callTool({
++            name: 'record_care_event',
++            arguments: { household_id: 'hh_rao', idempotency_key: 'ui-meal-00001', kind: 'meal', note: 'synthetic NONCE-UI1' }
++        });
+         const after = (await client.callTool({ name: 'show_care_dashboard', arguments: {} })).structuredContent as DashboardData;
+ 
+         expect(after.total).toBe(before.total + 1);
+--- evidence/phase2/tests-before/verify-render.ts.before	2026-10-11 00:59:51
++++ scripts/verify-render.ts	2026-10-11 01:06:28
+@@ -17,13 +17,16 @@
+ import { chromium, type Frame, type Page } from 'playwright';
+ 
+ import { connect } from '../src/client.js';
+-import { openEventStore } from '../src/db.js';
++import { openDatabase } from '../src/domain/migrations.js';
++import { seedDemoData } from '../src/domain/seed.js';
+ import { DASHBOARD_URI, startServer } from '../src/server.js';
+ 
+ const VERIFY_PORT = 3334;
+ const HOST_ORIGIN = 'http://localhost:8080';
+ const BASIC_HOST_DIR = 'hosts/ext-apps/examples/basic-host';
+-const EVIDENCE_DIR = 'evidence/poc1';
++const EVIDENCE_DIR = process.env.VERIFY_EVIDENCE_DIR ?? 'evidence/phase2/render';
++// Browser hosts can't send X-CareLoop-Actor, so the host session acts as the coordinator.
++const HOST_ACTOR = 'mem_priya';
+ const TIMEOUT_MS = 15_000;
+ 
+ const results: Array<{ check: string; pass: boolean; detail?: unknown }> = [];
+@@ -55,10 +58,15 @@
+ 
+ async function main(): Promise<void> {
+     mkdirSync(EVIDENCE_DIR, { recursive: true });
+-    const store = openEventStore(join(mkdtempSync(join(tmpdir(), 'careloop-render-')), 'render.db'));
+-    store.insert('medication', 'synthetic: Dad took 8am pills');
+-    store.insert('meal', 'synthetic: Dad ate oatmeal');
+-    const server = await startServer(store, VERIFY_PORT, [HOST_ORIGIN]);
++    const db = openDatabase(join(mkdtempSync(join(tmpdir(), 'careloop-render-')), 'render.db'));
++    seedDemoData(db);
++    const server = await startServer({ db, port: VERIFY_PORT, corsOrigins: [HOST_ORIGIN], defaultActorId: HOST_ACTOR });
++    const ravi = server.service.resolveActor('mem_ravi');
++    const at = (minutesAgo: number) => new Date(Date.now() - minutesAgo * 60_000).toISOString();
++    server.service.recordCareEvent(ravi, { household_id: 'hh_rao', idempotency_key: 'render-seed-1', kind: 'medication', note: 'synthetic: Dad took 8am pills', medication_schedule_id: 'med_ravi_morning', occurred_at: at(2) });
++    server.service.recordCareEvent(ravi, { household_id: 'hh_rao', idempotency_key: 'render-seed-2', kind: 'meal', note: 'synthetic: Dad ate oatmeal', occurred_at: at(1) });
++    const apt = server.service.prepareAppointmentRequest(ravi, { household_id: 'hh_rao', idempotency_key: 'render-seed-3', reason_as_reported: 'Knee hurts', preferred_window: 'this_week' });
++    const pending = server.service.draftCaregiverNotification(ravi, { household_id: 'hh_rao', idempotency_key: 'render-seed-4', appointment_request_id: apt.appointment_request.id });
+ 
+     let host: ChildProcess | undefined;
+     const browser = await chromium.launch();
+@@ -94,6 +102,10 @@
+         const initialRows = await view.$$eval('#events tr td:nth-child(3)', tds => tds.map(td => td.textContent));
+         check('view rendered inside a sandbox iframe (not the host page)', view !== page.mainFrame(), { frameUrl: view.url() || '(srcdoc/about:blank)' });
+         check('view shows the events stored in SQLite', initialRows.length === 2 && initialRows.includes('synthetic: Dad ate oatmeal'), initialRows);
++        const domainText = await view.textContent('main');
++        check('view shows the duty contact from the rota', /On duty today: (Priya|Arjun)/.test(domainText ?? ''));
++        check('view shows the medication reference with neutral no-report wording', (domainText ?? '').includes('No report recorded yet today') && !/missed/i.test(domainText ?? ''));
++        check('view lists the pending approval', (await view.$(`#approvals li[data-key="${pending.approval.id}"]`)) !== null);
+         check('initial data arrived via host tool-result notification', (await view.textContent('#status'))?.includes('host tool-result notification') ?? false);
+         check(
+             'host discovered the UI via MCP resources/read of the ui:// URI',
+@@ -113,15 +125,18 @@
+         await page.screenshot({ path: `${EVIDENCE_DIR}/10-verify-initial.png`, fullPage: true });
+ 
+         // Independent MCP client (separate session) writes a new event.
+-        const writer = await connect(server.url);
+-        await writer.client.callTool({ name: 'log_event', arguments: { kind: 'symptom', note: 'synthetic NONCE-RENDER' } });
++        const writer = await connect(server.url, { actor: 'mem_ravi' });
++        await writer.client.callTool({
++            name: 'record_care_event',
++            arguments: { household_id: 'hh_rao', idempotency_key: 'render-nonce-1', kind: 'symptom', note: 'synthetic NONCE-RENDER' }
++        });
+         await writer.client.close();
+ 
+         const callsBefore = sentMethods.filter(m => m.method === 'tools/call').length;
+         await view.click('#refresh');
+         await view.waitForFunction(() => document.body.textContent?.includes('synthetic NONCE-RENDER'), null, { timeout: TIMEOUT_MS });
+         const after = await view.$$eval('#events tr td:nth-child(3)', tds => tds.map(td => td.textContent));
+-        check('new log_event visible after view Refresh', after[0] === 'synthetic NONCE-RENDER' && after.length === 3, after);
++        check('new record_care_event visible after view Refresh', after[0] === 'synthetic NONCE-RENDER' && after.length === 3, after);
+         check(
+             'refresh went app -> host -> tools/call on the MCP server',
+             sentMethods.filter(m => m.method === 'tools/call').length === callsBefore + 1 && (await view.textContent('#status'))!.includes('tools/call'),
+@@ -134,7 +149,7 @@
+         await browser.close();
+         host?.kill();
+         await server.close();
+-        store.close();
++        db.close();
+     }
+ 
+     const failed = results.filter(r => !r.pass).length;

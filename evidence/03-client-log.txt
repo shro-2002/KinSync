@@ -1,0 +1,103 @@
+$ pnpm client log medication "synthetic: took morning pills NONCE-E1"
+$ tsx src/cli.ts log medication 'synthetic: took morning pills NONCE-E1'
+{
+  "pid": 42456,
+  "negotiatedProtocolVersion": "2025-11-25",
+  "sessionId": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8",
+  "server": {
+    "name": "careloop",
+    "version": "0.0.1"
+  },
+  "tools": [
+    "log_event"
+  ],
+  "callResult": {
+    "isError": false,
+    "structuredContent": {
+      "id": 1,
+      "kind": "medication",
+      "note": "synthetic: took morning pills NONCE-E1",
+      "createdAt": "2026-10-10T18:15:44.516Z"
+    }
+  },
+  "wire": [
+    {
+      "method": "POST",
+      "requestHeaders": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "content-type": "text/event-stream",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      }
+    },
+    {
+      "method": "POST",
+      "requestHeaders": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-protocol-version": "2025-11-25",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      },
+      "status": 202,
+      "responseHeaders": {
+        "content-type": "text/plain; charset=UTF-8"
+      }
+    },
+    {
+      "method": "GET",
+      "requestHeaders": {
+        "accept": "text/event-stream",
+        "mcp-protocol-version": "2025-11-25",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "content-type": "text/event-stream",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      }
+    },
+    {
+      "method": "POST",
+      "requestHeaders": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-protocol-version": "2025-11-25",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "content-type": "text/event-stream",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      }
+    },
+    {
+      "method": "POST",
+      "requestHeaders": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-protocol-version": "2025-11-25",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "content-type": "text/event-stream",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      }
+    },
+    {
+      "method": "DELETE",
+      "requestHeaders": {
+        "mcp-protocol-version": "2025-11-25",
+        "mcp-session-id": "0492bbaf-02a7-4f39-9df5-bd4e0246b7c8"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "content-type": "text/plain; charset=UTF-8"
+      }
+    }
+  ]
+}
+exit=0

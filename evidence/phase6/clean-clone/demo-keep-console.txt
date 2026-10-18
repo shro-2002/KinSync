@@ -1,0 +1,12 @@
+$ pnpm -s build:ui && tsx scripts/demo.ts -- --keep
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (605.6 KiB)
+
+KinSync demo (built from the CareLoop codebase) - an MCP Apps experience in a SIMULATED Alexa+ workflow, not native Alexa+.
+  MCP server      http://127.0.0.1:3333/mcp   (database data/kinsync-demo.db, KEPT from the last run)
+  Dashboard       http://localhost:8080/index.html?server=careloop&tool=show_care_dashboard&call=true
+  Browser session acts as Priya (coordinator). The dashboard's identity switcher is SIMULATED - demo only, not authentication.
+  Demo clock      starts Mon 2026-10-12 09:30 Asia/Kolkata (rota: Priya on duty) and runs in real time; now 2026-10-12T04:00:24.268Z
+
+--keep: no new request. Open the dashboard to show the persisted agreement and its audit trail.
+Ctrl+C to stop.

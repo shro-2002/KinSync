@@ -1,0 +1,9 @@
+{
+  "when": "2026-10-14T16:29:53.976Z",
+  "results": [
+    {
+      "check": "after restart: Completed agreement with 3-entry audit trail",
+      "pass": true
+    }
+  ]
+}

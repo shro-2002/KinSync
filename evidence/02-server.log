@@ -1,0 +1,6 @@
+# server run 1 (2026-10-10T18:15:39Z)
+$ tsx src/main.ts
+[careloop] MCP server on http://127.0.0.1:3333/mcp (db: data/careloop.db, pid 42406)
+# server run 2 (restarted, 2026-10-10T18:15:45Z)
+$ tsx src/main.ts
+[careloop] MCP server on http://127.0.0.1:3333/mcp (db: data/careloop.db, pid 42514)

@@ -1,0 +1,12 @@
+$ pnpm -s build:ui && vitest run
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (605.6 KiB)
+
+ RUN  v5.0.3 <clean-clone>
+
+
+ Test Files  10 passed (10)
+      Tests  221 passed (221)
+   Start at  22:38:44
+   Duration  8.14s (tests 70%, import 22%, transform 8%)
+

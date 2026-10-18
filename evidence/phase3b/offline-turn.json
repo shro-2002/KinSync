@@ -1,0 +1,176 @@
+{
+  "result": {
+    "stop": "awaiting_approval",
+    "reply": {
+      "action": "passed",
+      "violations": [],
+      "text": "I've recorded what you told me. I've prepared an appointment request for the family. Nothing has been booked. I've drafted a message to Priya. It is waiting for approval and has not been sent.",
+      "originalText": "I've recorded what you told me. I've prepared an appointment request for the family. Nothing has been booked. I've drafted a message to Priya. It is waiting for approval and has not been sent.",
+      "source": "model"
+    },
+    "trace": {
+      "format": "careloop.tool-trace/v1",
+      "turn_id": "turn_offline00000001",
+      "actor_member_id": "mem_ravi",
+      "household_id": "hh_rao",
+      "utterance_sha256": "b373f75bc0a4926ca32ab47877516a65afbfc3f9ff0bf67908aa24aa015eb4fc",
+      "planner": "deterministic/model-planner/v1",
+      "steps": [
+        {
+          "seq": 1,
+          "tool": "record_care_event",
+          "model_args": {
+            "kind": "medication",
+            "medication_schedule_id": "med_ravi_morning",
+            "note": "I took my morning medicines"
+          },
+          "effective_args": {
+            "kind": "medication",
+            "medication_schedule_id": "med_ravi_morning",
+            "note": "I took my morning medicines",
+            "household_id": "hh_rao",
+            "idempotency_key": "turn_offline00000001.87ff9fc2d8bb5acf4cd5976b"
+          },
+          "idempotency_key": "turn_offline00000001.87ff9fc2d8bb5acf4cd5976b",
+          "decision": "executed",
+          "policy_reason": null,
+          "discarded_args": [],
+          "outcome": "ok",
+          "error_code": null
+        },
+        {
+          "seq": 2,
+          "tool": "prepare_appointment_request",
+          "model_args": {
+            "reason_as_reported": "My knee has been hurting for a few days",
+            "preferred_window": "this_week",
+            "related_event_id": "evt_44fe0ac3572f"
+          },
+          "effective_args": {
+            "reason_as_reported": "My knee has been hurting for a few days",
+            "preferred_window": "this_week",
+            "related_event_id": "evt_44fe0ac3572f",
+            "household_id": "hh_rao",
+            "idempotency_key": "turn_offline00000001.cd8a6f65ef9bef33b2eacf8d"
+          },
+          "idempotency_key": "turn_offline00000001.cd8a6f65ef9bef33b2eacf8d",
+          "decision": "executed",
+          "policy_reason": null,
+          "discarded_args": [],
+          "outcome": "ok",
+          "error_code": null
+        },
+        {
+          "seq": 3,
+          "tool": "get_duty_contact",
+          "model_args": {},
+          "effective_args": {
+            "household_id": "hh_rao"
+          },
+          "idempotency_key": null,
+          "decision": "executed",
+          "policy_reason": null,
+          "discarded_args": [],
+          "outcome": "ok",
+          "error_code": null
+        },
+        {
+          "seq": 4,
+          "tool": "draft_caregiver_notification",
+          "model_args": {
+            "appointment_request_id": "apt_9ce67e7be525",
+            "related_event_id": "evt_44fe0ac3572f",
+            "recipient_member_id": "mem_priya"
+          },
+          "effective_args": {
+            "appointment_request_id": "apt_9ce67e7be525",
+            "related_event_id": "evt_44fe0ac3572f",
+            "recipient_member_id": "mem_priya",
+            "household_id": "hh_rao",
+            "idempotency_key": "turn_offline00000001.2b00234e975a3f02deba2861"
+          },
+          "idempotency_key": "turn_offline00000001.2b00234e975a3f02deba2861",
+          "decision": "executed",
+          "policy_reason": null,
+          "discarded_args": [],
+          "outcome": "ok",
+          "error_code": null
+        }
+      ],
+      "stop_reason": "awaiting_approval"
+    },
+    "modelIterations": 5,
+    "usage": {
+      "iterations": [
+        {
+          "iteration": 1,
+          "model": "deterministic",
+          "stop": "tool_use",
+          "toolCalls": 1,
+          "latencyMs": 0,
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        {
+          "iteration": 2,
+          "model": "deterministic",
+          "stop": "tool_use",
+          "toolCalls": 1,
+          "latencyMs": 0,
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        {
+          "iteration": 3,
+          "model": "deterministic",
+          "stop": "tool_use",
+          "toolCalls": 1,
+          "latencyMs": 0,
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        {
+          "iteration": 4,
+          "model": "deterministic",
+          "stop": "tool_use",
+          "toolCalls": 1,
+          "latencyMs": 0,
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        {
+          "iteration": 5,
+          "model": "deterministic",
+          "stop": "end_turn",
+          "toolCalls": 0,
+          "latencyMs": 0,
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        }
+      ],
+      "totals": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0
+      },
+      "estimatedCostUsd": null
+    },
+    "providerError": null
+  },
+  "evaluation": {
+    "contract": "careloop.golden/medication-appointment/v1",
+    "pass": true,
+    "violations": []
+  }
+}

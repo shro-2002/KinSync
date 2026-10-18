@@ -1,0 +1,55 @@
+{
+  "name": "careloop",
+  "version": "0.0.1",
+  "description": "CareLoop PoC-0: MCP server (spec 2025-11-25, Streamable HTTP) + independent client",
+  "scripts": {
+    "server": "pnpm -s build:ui && tsx src/main.ts",
+    "client": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm -s build:ui && vitest run",
+    "inspector": "npx -y @modelcontextprotocol/inspector@2.10.1",
+    "build:ui": "tsx scripts/build-ui.ts",
+    "verify:render": "pnpm -s build:ui && tsx scripts/verify-render.ts",
+    "verify:handoff-ui": "pnpm -s build:ui && tsx scripts/verify-handoff-ui.ts",
+    "demo": "pnpm -s build:ui && tsx scripts/demo.ts",
+    "handoff:demo": "tsx scripts/handoff-demo.ts",
+    "handoff:ollama": "tsx scripts/handoff-ollama.ts",
+    "scenario": "tsx scripts/run-scenario.ts",
+    "golden": "tsx scripts/golden-trace.ts",
+    "eval:live": "tsx scripts/live-eval.ts",
+    "agent:offline": "tsx scripts/offline-turn.ts"
+  },
+  "author": "",
+  "license": "MIT",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.9.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.133.0",
+    "@modelcontextprotocol/client": "2.3.1",
+    "@modelcontextprotocol/express": "2.0.2",
+    "@modelcontextprotocol/ext-apps": "2.0.3",
+    "@modelcontextprotocol/node": "2.1.1",
+    "@modelcontextprotocol/server": "2.3.1",
+    "express": "5.3.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "26.6.4",
+    "esbuild": "0.28.2",
+    "playwright": "1.61.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.0.3"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22.13"
+  }
+}

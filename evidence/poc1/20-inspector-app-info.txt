@@ -1,0 +1,14 @@
+$ npx -y @modelcontextprotocol/inspector@2.10.1 --cli http://127.0.0.1:3333/mcp --method tools/list --app-info
+{"hasApp":false,"toolName":"log_event"}
+{"hasApp":true,"toolName":"show_care_dashboard","resourceUri":"ui://careloop/dashboard.html","resourceMimeType":"text/html;profile=mcp-app"}
+exit=0
+
+$ npx -y @modelcontextprotocol/inspector@2.10.1 --cli http://127.0.0.1:3333/mcp --method tools/call --tool-name show_care_dashboard --app-info
+{"hasApp":true,"toolName":"show_care_dashboard","resourceUri":"ui://careloop/dashboard.html","resourceMimeType":"text/html;profile=mcp-app"}
+exit=0
+
+$ npx -y @modelcontextprotocol/inspector@2.10.1 --cli http://127.0.0.1:3333/mcp --method tools/call --tool-name log_event --app-info
+{"hasApp":false,"toolName":"log_event"}
+{"error":{"code":"no_app","message":"Tool 'log_event' has no MCP App UI resource (_meta.ui.resourceUri)."}}
+exit=2
+

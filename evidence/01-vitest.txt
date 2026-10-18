@@ -1,0 +1,45 @@
+$ vitest run --reporter=verbose
+
+ RUN  v5.0.3 <repo>
+
+stdout | test/conformance.test.ts > lifecycle: version negotiation > unsupported requested version: server MUST respond with another version it supports (lifecycle §version negotiation)
+[observed] init with 2099-01-01: {"status":200,"body":{"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true},"resources":{"listChanged":true}},"serverInfo":{"name":"careloop","version":"0.0.1"}},"jsonrpc":"2.0","id":1}}
+
+stdout | test/conformance.test.ts > transports: Streamable HTTP > GET returns text/event-stream or 405 (MUST)
+[observed] GET status/content-type: [200,"text/event-stream"]
+
+ ✓ test/conformance.test.ts > lifecycle: version negotiation > server answers initialize(2025-11-25) with protocolVersion 2025-11-25 144ms
+ ✓ test/conformance.test.ts > lifecycle: version negotiation > unsupported requested version: server MUST respond with another version it supports (lifecycle §version negotiation) 30ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC request returns application/json or text/event-stream (MUST) 26ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC notification that is accepted returns 202 with no body (MUST) 14ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > negotiates protocol version 2025-11-25 and exposes exactly one tool 218ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > sends MCP-Protocol-Version on every request after initialize 39ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > GET returns text/event-stream or 405 (MUST) 25ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > invalid or unsupported MCP-Protocol-Version header returns 400 (MUST) 21ms
+ ✓ test/conformance.test.ts > security: Origin validation > present and invalid Origin returns 403 (MUST) 11ms
+ ✓ test/conformance.test.ts > security: Origin validation > localhost Origin is accepted (local browser host must be able to connect) 16ms
+ ✓ test/conformance.test.ts > security: Origin validation > absent Origin is not rejected (spec only constrains a present Origin) 41ms
+ ✓ test/conformance.test.ts > security: Origin validation > server is bound to loopback only (SHOULD when running locally) 8ms
+stdout | test/conformance.test.ts > transports: session management > session id, if assigned, is visible ASCII 0x21-0x7E (MUST)
+[observed] session id assigned: true
+
+stdout | test/conformance.test.ts > transports: session management > after DELETE terminates the session, requests with that id get 404 (MUST); DELETE may be 405
+[observed] DELETE status: 200
+
+stdout | test/conformance.test.ts > transports: session management > informative: request with a never-issued session id
+[observed] unknown session id status: 404
+
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > log_event stores a synthetic event and returns it as structured content 81ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > rejects invalid log_event input instead of storing it 33ms
+ ✓ test/conformance.test.ts > transports: session management > session id, if assigned, is visible ASCII 0x21-0x7E (MUST) 22ms
+ ✓ test/conformance.test.ts > transports: session management > server that requires a session id rejects non-init requests without one with 400 (SHOULD) 20ms
+ ✓ test/conformance.test.ts > transports: session management > after DELETE terminates the session, requests with that id get 404 (MUST); DELETE may be 405 16ms
+ ✓ test/conformance.test.ts > transports: session management > a live session keeps working across requests (session id round-trips) 34ms
+ ✓ test/conformance.test.ts > transports: session management > informative: request with a never-issued session id 6ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > persists events to disk: a fresh server and fresh client read what an earlier session wrote 62ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  23:45:37
+   Duration  1.26s (tests 50%, import 41%, transform 9%, worker 1%)
+

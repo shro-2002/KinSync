@@ -1,0 +1,580 @@
+{
+  "generated_by": "pnpm scenario",
+  "fixed_now": "2026-10-12T04:00:00.000Z",
+  "protocol": "2025-11-25",
+  "scenario_input": {
+    "householdId": "hh_rao",
+    "runId": "demo-turn-0001",
+    "medicationScheduleId": "med_ravi_morning",
+    "medicationNote": "I took my morning medicines.",
+    "appointmentReason": "My knee has been hurting for a few days and I would like to see the doctor.",
+    "preferredWindow": "this_week",
+    "providerLabel": "Family physician (synthetic)"
+  },
+  "first_run": {
+    "status": "awaiting_approval",
+    "steps": [
+      {
+        "step": 1,
+        "tool": "record_care_event",
+        "arguments": {
+          "household_id": "hh_rao",
+          "idempotency_key": "demo-turn-0001:medication-report",
+          "kind": "medication",
+          "medication_schedule_id": "med_ravi_morning",
+          "note": "I took my morning medicines."
+        },
+        "isError": false,
+        "result": {
+          "event": {
+            "id": "evt_5c271918dd14",
+            "householdId": "hh_rao",
+            "subjectMemberId": "mem_ravi",
+            "reportedByMemberId": "mem_ravi",
+            "kind": "medication",
+            "note": "I took my morning medicines.",
+            "medicationScheduleId": "med_ravi_morning",
+            "occurredAt": "2026-10-12T04:00:00.000Z",
+            "recordedAt": "2026-10-12T04:00:00.000Z"
+          },
+          "deduplicated": false,
+          "possible_duplicate_of": null,
+          "safety_notice": "CareLoop coordinates family logistics only. It does not give medical advice, diagnoses, or medication guidance. Synthetic demo data.",
+          "replayed": false
+        }
+      },
+      {
+        "step": 2,
+        "tool": "prepare_appointment_request",
+        "arguments": {
+          "household_id": "hh_rao",
+          "idempotency_key": "demo-turn-0001:appointment-request",
+          "reason_as_reported": "My knee has been hurting for a few days and I would like to see the doctor.",
+          "preferred_window": "this_week",
+          "provider_label": "Family physician (synthetic)",
+          "related_event_id": "evt_5c271918dd14"
+        },
+        "isError": false,
+        "result": {
+          "appointment_request": {
+            "id": "apt_7d46bd46a67a",
+            "householdId": "hh_rao",
+            "subjectMemberId": "mem_ravi",
+            "requestedByMemberId": "mem_ravi",
+            "reasonAsReported": "My knee has been hurting for a few days and I would like to see the doctor.",
+            "preferredWindow": "this_week",
+            "providerLabel": "Family physician (synthetic)",
+            "relatedEventId": "evt_5c271918dd14",
+            "status": "prepared",
+            "createdAt": "2026-10-12T04:00:00.000Z"
+          },
+          "deduplicated": false,
+          "nothing_booked": true,
+          "emergency_notice": "If this might be an emergency, contact local emergency services now; CareLoop does not triage.",
+          "replayed": false
+        }
+      },
+      {
+        "step": 3,
+        "tool": "get_duty_contact",
+        "arguments": {
+          "household_id": "hh_rao"
+        },
+        "isError": false,
+        "result": {
+          "date": "2026-10-12",
+          "weekday": 1,
+          "basis": "duty_rota",
+          "contact": {
+            "member_id": "mem_priya",
+            "name": "Priya",
+            "relationship": "daughter",
+            "contact_label": "Priya phone (simulated)"
+          }
+        }
+      },
+      {
+        "step": 4,
+        "tool": "draft_caregiver_notification",
+        "arguments": {
+          "household_id": "hh_rao",
+          "idempotency_key": "demo-turn-0001:notify-duty-contact",
+          "appointment_request_id": "apt_7d46bd46a67a",
+          "related_event_id": "evt_5c271918dd14",
+          "recipient_member_id": "mem_priya"
+        },
+        "isError": false,
+        "result": {
+          "draft": {
+            "id": "ntf_cf645443116d",
+            "householdId": "hh_rao",
+            "recipientMemberId": "mem_priya",
+            "draftedByMemberId": "mem_ravi",
+            "appointmentRequestId": "apt_7d46bd46a67a",
+            "relatedEventId": "evt_5c271918dd14",
+            "channel": "simulated",
+            "body": "[CareLoop draft - simulated, not sent] Hi Priya, Ravi asked for help through CareLoop.\nAppointment help requested for Ravi with Family physician (synthetic), this week. Reason in their own words: \"My knee has been hurting for a few days and I would like to see the doctor\".\nLatest medication report (2026-10-12 09:30, from Ravi): \"I took my morning medicines\".\nPlease check in with the family. This is a coordination message, not medical advice.",
+            "status": "pending_approval",
+            "createdAt": "2026-10-12T04:00:00.000Z"
+          },
+          "approval": {
+            "id": "apv_cf645443116d",
+            "householdId": "hh_rao",
+            "actionType": "send_notification",
+            "targetId": "ntf_cf645443116d",
+            "requestedByMemberId": "mem_ravi",
+            "status": "pending",
+            "decidedByMemberId": null,
+            "decisionReason": null,
+            "createdAt": "2026-10-12T04:00:00.000Z",
+            "decidedAt": null
+          },
+          "deduplicated": false,
+          "sent": false,
+          "replayed": false
+        }
+      },
+      {
+        "step": 5,
+        "tool": "get_household_status",
+        "arguments": {
+          "household_id": "hh_rao"
+        },
+        "isError": false,
+        "result": {
+          "household": {
+            "id": "hh_rao",
+            "name": "Rao household (synthetic)",
+            "timezone": "Asia/Kolkata"
+          },
+          "generated_at": "2026-10-12T04:00:00.000Z",
+          "local_date": "2026-10-12",
+          "members": [
+            {
+              "member_id": "mem_arjun",
+              "name": "Arjun",
+              "relationship": "son",
+              "role": "caregiver"
+            },
+            {
+              "member_id": "mem_meera",
+              "name": "Meera",
+              "relationship": "granddaughter",
+              "role": "viewer"
+            },
+            {
+              "member_id": "mem_priya",
+              "name": "Priya",
+              "relationship": "daughter",
+              "role": "coordinator"
+            },
+            {
+              "member_id": "mem_ravi",
+              "name": "Ravi",
+              "relationship": "father",
+              "role": "care_recipient"
+            }
+          ],
+          "duty_contact": {
+            "member_id": "mem_priya",
+            "name": "Priya",
+            "relationship": "daughter",
+            "contact_label": "Priya phone (simulated)"
+          },
+          "medication_reference": [
+            {
+              "schedule_id": "med_ravi_morning",
+              "for": "Ravi",
+              "label": "Morning medicines (as entered by Priya)",
+              "times_of_day": [
+                "08:00"
+              ],
+              "reports_today": [
+                {
+                  "at_local": "09:30",
+                  "reported_by": "Ravi",
+                  "note": "I took my morning medicines."
+                }
+              ],
+              "status_text": "Report recorded today (1)"
+            },
+            {
+              "schedule_id": "med_ravi_evening",
+              "for": "Ravi",
+              "label": "Evening medicines (as entered by Priya)",
+              "times_of_day": [
+                "20:00"
+              ],
+              "reports_today": [],
+              "status_text": "No report recorded yet today"
+            }
+          ],
+          "recent_events": [
+            {
+              "id": "evt_5c271918dd14",
+              "kind": "medication",
+              "note": "I took my morning medicines.",
+              "about": "Ravi",
+              "reported_by": "Ravi",
+              "occurred_at": "2026-10-12T04:00:00.000Z"
+            }
+          ],
+          "open_appointment_requests": [
+            {
+              "id": "apt_7d46bd46a67a",
+              "reason_as_reported": "My knee has been hurting for a few days and I would like to see the doctor.",
+              "preferred_window": "this_week",
+              "status": "prepared"
+            }
+          ],
+          "pending_approvals": [
+            {
+              "approval_id": "apv_cf645443116d",
+              "action": "send_notification",
+              "draft_id": "ntf_cf645443116d",
+              "requested_by": "Ravi",
+              "draft_preview": "[CareLoop draft - simulated, not sent] Hi Priya, Ravi asked for help through CareLoop.\nAppointment help requested for Ravi with Family physician (synthetic), this week. Reason in their own words: \"My knee has been hurting for a few days and I would like to see the doctor\".\nLatest medication report (2026-10-12 09:30, from Ravi): \"I took my morning medicines\".\nPlease check in with the family. This is a coordination message, not medical advice."
+            }
+          ],
+          "simulated_notifications_sent": 0,
+          "safety_notice": "CareLoop coordinates family logistics only. It does not give medical advice, diagnoses, or medication guidance. Synthetic demo data."
+        }
+      }
+    ],
+    "eventId": "evt_5c271918dd14",
+    "appointmentRequestId": "apt_7d46bd46a67a",
+    "draftId": "ntf_cf645443116d",
+    "approvalId": "apv_cf645443116d",
+    "dutyContact": "Priya",
+    "replayed": [
+      false,
+      false,
+      false
+    ]
+  },
+  "retry_replayed": [
+    true,
+    true,
+    true
+  ],
+  "counts_after_first_run": {
+    "care_events": 1,
+    "appointment_requests": 1,
+    "notification_drafts": 1,
+    "approvals": 1,
+    "simulated_outbox": 0
+  },
+  "cross_household_attempt": {
+    "error": {
+      "code": "FORBIDDEN",
+      "message": "Actor is not a member of household hh_rao",
+      "details": {
+        "reason": "household"
+      }
+    }
+  },
+  "wrong_role_attempt": {
+    "error": {
+      "code": "FORBIDDEN",
+      "message": "Role caregiver may not decide_approval",
+      "details": {
+        "reason": "role",
+        "role": "caregiver"
+      }
+    }
+  },
+  "approval": {
+    "approval": {
+      "id": "apv_cf645443116d",
+      "householdId": "hh_rao",
+      "actionType": "send_notification",
+      "targetId": "ntf_cf645443116d",
+      "requestedByMemberId": "mem_ravi",
+      "status": "approved",
+      "decidedByMemberId": "mem_priya",
+      "decisionReason": null,
+      "createdAt": "2026-10-12T04:00:00.000Z",
+      "decidedAt": "2026-10-12T04:00:00.000Z"
+    },
+    "draft": {
+      "id": "ntf_cf645443116d",
+      "householdId": "hh_rao",
+      "recipientMemberId": "mem_priya",
+      "draftedByMemberId": "mem_ravi",
+      "appointmentRequestId": "apt_7d46bd46a67a",
+      "relatedEventId": "evt_5c271918dd14",
+      "channel": "simulated",
+      "body": "[CareLoop draft - simulated, not sent] Hi Priya, Ravi asked for help through CareLoop.\nAppointment help requested for Ravi with Family physician (synthetic), this week. Reason in their own words: \"My knee has been hurting for a few days and I would like to see the doctor\".\nLatest medication report (2026-10-12 09:30, from Ravi): \"I took my morning medicines\".\nPlease check in with the family. This is a coordination message, not medical advice.",
+      "status": "approved",
+      "createdAt": "2026-10-12T04:00:00.000Z"
+    },
+    "outbox": {
+      "id": "out_38c1a414c479",
+      "delivery": "simulated_not_sent"
+    },
+    "real_message_sent": false,
+    "replayed": false
+  },
+  "same_key_replay": {
+    "replayed": true
+  },
+  "second_approval_new_key": {
+    "error": {
+      "code": "ALREADY_DECIDED",
+      "message": "Approval apv_cf645443116d is already approved",
+      "details": {
+        "status": "approved"
+      }
+    }
+  },
+  "final_status": {
+    "household": {
+      "id": "hh_rao",
+      "name": "Rao household (synthetic)",
+      "timezone": "Asia/Kolkata"
+    },
+    "generated_at": "2026-10-12T04:00:00.000Z",
+    "local_date": "2026-10-12",
+    "members": [
+      {
+        "member_id": "mem_arjun",
+        "name": "Arjun",
+        "relationship": "son",
+        "role": "caregiver"
+      },
+      {
+        "member_id": "mem_meera",
+        "name": "Meera",
+        "relationship": "granddaughter",
+        "role": "viewer"
+      },
+      {
+        "member_id": "mem_priya",
+        "name": "Priya",
+        "relationship": "daughter",
+        "role": "coordinator"
+      },
+      {
+        "member_id": "mem_ravi",
+        "name": "Ravi",
+        "relationship": "father",
+        "role": "care_recipient"
+      }
+    ],
+    "duty_contact": {
+      "member_id": "mem_priya",
+      "name": "Priya",
+      "relationship": "daughter",
+      "contact_label": "Priya phone (simulated)"
+    },
+    "medication_reference": [
+      {
+        "schedule_id": "med_ravi_morning",
+        "for": "Ravi",
+        "label": "Morning medicines (as entered by Priya)",
+        "times_of_day": [
+          "08:00"
+        ],
+        "reports_today": [
+          {
+            "at_local": "09:30",
+            "reported_by": "Ravi",
+            "note": "I took my morning medicines."
+          }
+        ],
+        "status_text": "Report recorded today (1)"
+      },
+      {
+        "schedule_id": "med_ravi_evening",
+        "for": "Ravi",
+        "label": "Evening medicines (as entered by Priya)",
+        "times_of_day": [
+          "20:00"
+        ],
+        "reports_today": [],
+        "status_text": "No report recorded yet today"
+      }
+    ],
+    "recent_events": [
+      {
+        "id": "evt_5c271918dd14",
+        "kind": "medication",
+        "note": "I took my morning medicines.",
+        "about": "Ravi",
+        "reported_by": "Ravi",
+        "occurred_at": "2026-10-12T04:00:00.000Z"
+      }
+    ],
+    "open_appointment_requests": [],
+    "pending_approvals": [],
+    "simulated_notifications_sent": 1,
+    "safety_notice": "CareLoop coordinates family logistics only. It does not give medical advice, diagnoses, or medication guidance. Synthetic demo data."
+  },
+  "final_counts": {
+    "care_events": 1,
+    "appointment_requests": 1,
+    "notification_drafts": 1,
+    "approvals": 1,
+    "simulated_outbox": 1
+  },
+  "audit_trail": [
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_ravi",
+      "action": "record_care_event",
+      "target_id": "evt_5c271918dd14",
+      "outcome": "ok",
+      "detail": "{\"key\":\"demo-turn-0001:medication-report\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_ravi",
+      "action": "prepare_appointment_request",
+      "target_id": "apt_7d46bd46a67a",
+      "outcome": "ok",
+      "detail": "{\"key\":\"demo-turn-0001:appointment-request\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_ravi",
+      "action": "draft_caregiver_notification",
+      "target_id": "ntf_cf645443116d",
+      "outcome": "ok",
+      "detail": "{\"key\":\"demo-turn-0001:notify-duty-contact\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_ravi",
+      "action": "record_care_event",
+      "target_id": null,
+      "outcome": "replayed",
+      "detail": "{\"key\":\"demo-turn-0001:medication-report\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_ravi",
+      "action": "prepare_appointment_request",
+      "target_id": null,
+      "outcome": "replayed",
+      "detail": "{\"key\":\"demo-turn-0001:appointment-request\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_ravi",
+      "action": "draft_caregiver_notification",
+      "target_id": null,
+      "outcome": "replayed",
+      "detail": "{\"key\":\"demo-turn-0001:notify-duty-contact\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_wei",
+      "action": "decide_approval",
+      "target_id": null,
+      "outcome": "denied",
+      "detail": "{\"reason\":\"household\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_arjun",
+      "action": "decide_approval",
+      "target_id": null,
+      "outcome": "denied",
+      "detail": "{\"reason\":\"role\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "decide_approval",
+      "target_id": "apv_cf645443116d",
+      "outcome": "ok",
+      "detail": "{\"key\":\"priya-approve-0001\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "decide_approval",
+      "target_id": null,
+      "outcome": "replayed",
+      "detail": "{\"key\":\"priya-approve-0001\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "decide_approval",
+      "target_id": null,
+      "outcome": "conflict",
+      "detail": "{\"key\":\"priya-approve-0002\",\"code\":\"ALREADY_DECIDED\"}"
+    }
+  ],
+  "checks": [
+    {
+      "check": "A: scenario stops in awaiting_approval",
+      "pass": true
+    },
+    {
+      "check": "A: duty contact on Monday is Priya",
+      "pass": true
+    },
+    {
+      "check": "A: nothing sent before approval",
+      "pass": true
+    },
+    {
+      "check": "A: protocol 2025-11-25",
+      "pass": true
+    },
+    {
+      "check": "B: retry replays all three writes",
+      "pass": true
+    },
+    {
+      "check": "B: retry returns the same ids",
+      "pass": true
+    },
+    {
+      "check": "B: no new rows after retry",
+      "pass": true
+    },
+    {
+      "check": "C: cross-household approval denied (FORBIDDEN)",
+      "pass": true
+    },
+    {
+      "check": "D: caregiver approval denied (FORBIDDEN, role)",
+      "pass": true
+    },
+    {
+      "check": "E: approval recorded",
+      "pass": true
+    },
+    {
+      "check": "E: delivery is simulated only",
+      "pass": true
+    },
+    {
+      "check": "E: same-key approve replays",
+      "pass": true
+    },
+    {
+      "check": "E: second approval with new key refused (ALREADY_DECIDED)",
+      "pass": true
+    },
+    {
+      "check": "E: exactly one simulated send",
+      "pass": true
+    },
+    {
+      "check": "F: no pending approvals left",
+      "pass": true
+    },
+    {
+      "check": "F: appointment request handed off (no longer open)",
+      "pass": true
+    },
+    {
+      "check": "F: morning schedule shows a report; evening shows neutral no-report text",
+      "pass": true
+    }
+  ]
+}

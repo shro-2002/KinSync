@@ -1,0 +1,12 @@
+M1 output safety disabled (always pass):
+      Tests  7 failed | 120 passed (127)
+M2 iteration cap ignored:
+      Tests  1 failed | 126 passed (127)
+M3 automatic retry on provider error:
+      Tests  1 failed | 126 passed (127)
+M4 server descriptions leaked to model:
+      Tests  1 failed | 126 passed (127)
+M5 token budget ignored:
+      Tests  1 failed | 126 passed (127)
+RESTORED:
+      Tests  127 passed (127)

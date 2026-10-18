@@ -1,0 +1,107 @@
+$ pnpm -s build:ui && vitest run --reporter=verbose
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (590.7 KiB)
+
+ RUN  v5.0.3 <repo>
+
+stdout | test/conformance.test.ts > lifecycle: version negotiation > unsupported requested version: server MUST respond with another version it supports (lifecycle §version negotiation)
+[observed] init with 2099-01-01: {"status":200,"body":{"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true},"resources":{"listChanged":true}},"serverInfo":{"name":"careloop","version":"0.2.0"}},"jsonrpc":"2.0","id":1}}
+
+ ✓ test/conformance.test.ts > lifecycle: version negotiation > server answers initialize(2025-11-25) with protocolVersion 2025-11-25 45ms
+ ✓ test/conformance.test.ts > lifecycle: version negotiation > unsupported requested version: server MUST respond with another version it supports (lifecycle §version negotiation) 17ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC request returns application/json or text/event-stream (MUST) 15ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > negotiates protocol version 2025-11-25 and exposes exactly the expected tools 80ms
+ ✓ test/domain.test.ts > migrations and seed > creates the schema at the latest version and reopening is a no-op 6ms
+ ✓ test/domain.test.ts > migrations and seed > upgrades a PoC-0 database in place and leaves its legacy table untouched 3ms
+ ✓ test/domain.test.ts > migrations and seed > seeding is deterministic and idempotent 1ms
+ ✓ test/domain.test.ts > migrations and seed > stores no dose or strength for medication schedules (by design) 1ms
+ ✓ test/domain.test.ts > happy path (service level) > event -> appointment request -> duty contact -> draft -> approve -> one simulated send 20ms
+ ✓ test/domain.test.ts > happy path (service level) > the care recipient may approve their own request 3ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > same key + same input replays the stored result for every mutation 3ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > same key + different input is a conflict and writes nothing 2ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > fresh-key retries are deduplicated by natural key (appointment, draft, recent identical event) 2ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > identical events far apart in time are separate reports 1ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > a second approval with a new key is refused and never sends twice 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects unknown kind 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects empty note 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects note too long 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects short idempotency key 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects idempotency key with spaces 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects bad occurred_at 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects future occurred_at 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects schedule id on a non-medication event 1ms
+ ✓ test/domain.test.ts > invalid inputs > appointment request rejects an unknown window and an over-long reason 1ms
+ ✓ test/domain.test.ts > invalid inputs > draft requires something to talk about 1ms
+ ✓ test/domain.test.ts > invalid inputs > invalid input is audited 1ms
+ ✓ test/domain.test.ts > authorization: household and role > members of another household are denied every operation 3ms
+ ✓ test/domain.test.ts > authorization: household and role > another household's ids look like they do not exist (no existence leak) 3ms
+ ✓ test/domain.test.ts > authorization: household and role > viewer can read but not write; caregiver cannot approve 4ms
+ ✓ test/domain.test.ts > authorization: household and role > sessions without an actor, or with an unknown one, are refused 1ms
+ ✓ test/domain.test.ts > rejected approvals > reject: nothing sent, request stays open, decision recorded, a new draft may follow 4ms
+ ✓ test/domain.test.ts > failure recovery > a crash before commit leaves no partial state, and the same key then succeeds once 9ms
+ ✓ test/domain.test.ts > failure recovery > a crash while approving sends nothing and leaves the approval pending 9ms
+ ✓ test/domain.test.ts > medical safety > a schedule without a report says exactly "no report recorded", never "missed" 2ms
+ ✓ test/domain.test.ts > medical safety > a report counts only on the local day it occurred (household time zone) 6ms
+ ✓ test/domain.test.ts > medical safety > system-authored draft text carries no advice; the person's words are quoted and attributed 1ms
+ ✓ test/domain.test.ts > medical safety > notes are stored verbatim, including a person's own mention of a dose 1ms
+ ✓ test/domain.test.ts > medical safety > appointment preparation never books anything and points emergencies elsewhere 3ms
+ ✓ test/domain.test.ts > duty contact > follows the rota by weekday and respects the household time zone 4ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > show_care_dashboard advertises a ui:// resource via _meta.ui.resourceUri (official helper) 81ms
+ ✓ test/domain.test.ts > duty contact > falls back to the coordinator when the rota has a gap 1ms
+stdout | test/conformance.test.ts > transports: Streamable HTTP > GET returns text/event-stream or 405 (MUST)
+[observed] GET status/content-type: [200,"text/event-stream"]
+
+stdout | test/conformance.test.ts > transports: session management > session id, if assigned, is visible ASCII 0x21-0x7E (MUST)
+[observed] session id assigned: true
+
+stdout | test/conformance.test.ts > transports: session management > after DELETE terminates the session, requests with that id get 404 (MUST); DELETE may be 405
+[observed] DELETE status: 200
+
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > sends MCP-Protocol-Version on every request after initialize 34ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > record_care_event stores a synthetic event and returns it as structured content 41ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > rejects invalid record_care_event input instead of storing it 11ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > persists events to disk: a fresh server and fresh client read what an earlier session wrote 20ms
+stdout | test/conformance.test.ts > transports: session management > informative: request with a never-issued session id
+[observed] unknown session id status: 404
+
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC notification that is accepted returns 202 with no body (MUST) 25ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > GET returns text/event-stream or 405 (MUST) 18ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > invalid or unsupported MCP-Protocol-Version header returns 400 (MUST) 11ms
+ ✓ test/conformance.test.ts > security: Origin validation > present and invalid Origin returns 403 (MUST) 6ms
+ ✓ test/conformance.test.ts > security: Origin validation > localhost Origin is accepted (local browser host must be able to connect) 8ms
+ ✓ test/conformance.test.ts > security: Origin validation > absent Origin is not rejected (spec only constrains a present Origin) 4ms
+ ✓ test/conformance.test.ts > security: Origin validation > server is bound to loopback only (SHOULD when running locally) 3ms
+ ✓ test/conformance.test.ts > transports: session management > session id, if assigned, is visible ASCII 0x21-0x7E (MUST) 7ms
+ ✓ test/conformance.test.ts > transports: session management > server that requires a session id rejects non-init requests without one with 400 (SHOULD) 6ms
+ ✓ test/conformance.test.ts > transports: session management > after DELETE terminates the session, requests with that id get 404 (MUST); DELETE may be 405 8ms
+ ✓ test/conformance.test.ts > transports: session management > a live session keeps working across requests (session id round-trips) 9ms
+ ✓ test/conformance.test.ts > transports: session management > informative: request with a never-issued session id 6ms
+ ✓ test/workflow.test.ts > workflow over MCP > happy path: scenario stops at the approval boundary; coordinator approval queues exactly one simulated send 148ms
+ ✓ test/workflow.test.ts > workflow over MCP > duplicate calls: re-running the same turn replays every write and adds no rows 33ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > the referenced resource exists in resources/list (spec: resource MUST exist on the server) 32ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > resources/read returns text/html;profile=mcp-app with a complete HTML5 document 24ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > the view gets no direct network path to the server: no CSP connectDomains, no server address embedded 17ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: data flow > tool result carries the persisted events, and a later record_care_event is visible on the next call 34ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: data flow > session negotiated for the MCP Apps host path is still 2025-11-25 10ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > allowlisted origin: preflight grants the MCP headers 3ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > allowlisted origin: initialize response exposes mcp-session-id to the page 5ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > localhost origin not on the allowlist gets no CORS grant (browser cannot read responses) 4ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > enabling CORS does not weaken Origin validation: foreign origin still gets 403 (preflight and POST) 5ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > default (no allowlist) sends no CORS headers at all 4ms
+ ✓ test/workflow.test.ts > workflow over MCP > duplicate calls with fresh keys (a retrying planner) still create no duplicate request or notification 26ms
+ ✓ test/workflow.test.ts > workflow over MCP > invalid input over MCP is a tool error and stores nothing 8ms
+ ✓ test/workflow.test.ts > workflow over MCP > cross-household access is denied over MCP 11ms
+ ✓ test/workflow.test.ts > workflow over MCP > the actor cannot be chosen through tool arguments (impersonation attempt is ignored) 6ms
+ ✓ test/workflow.test.ts > workflow over MCP > sessions without an actor or with an unknown actor are refused 9ms
+ ✓ test/workflow.test.ts > workflow over MCP > rejected approval over MCP: nothing sent, request remains open 14ms
+ ✓ test/workflow.test.ts > workflow over MCP > state persists across a server restart in the middle of the workflow 19ms
+ ✓ test/workflow.test.ts > workflow over MCP > a failed write over MCP rolls back and the same key succeeds on retry 8ms
+ ✓ test/workflow.test.ts > MCP Apps dashboard with domain state > is read-only and shows duty contact, medication reference and pending approvals 16ms
+ ✓ test/workflow.test.ts > MCP Apps dashboard with domain state > tool annotations describe write tools as idempotent and read tools as read-only 8ms
+
+ Test Files  5 passed (5)
+      Tests  79 passed (79)
+   Start at  01:10:59
+   Duration  703ms (tests 44%, import 43%, transform 12%, worker 1%)
+
+vitest exit=0

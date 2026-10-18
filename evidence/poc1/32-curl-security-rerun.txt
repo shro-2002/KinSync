@@ -1,0 +1,64 @@
+# PoC-0 curl security script re-run against PoC-1 server with CARELOOP_CORS_ORIGINS=http://localhost:8080 (2026-10-10T18:48:10Z)
+## A. initialize, no Origin
+HTTP/1.1 200 OK
+X-Powered-By: Express
+cache-control: no-cache, no-transform
+connection: keep-alive
+content-type: text/event-stream
+mcp-session-id: 4df701b6-c5bc-4d89-b781-b5be95c145d7
+x-accel-buffering: no
+content-length: 219
+Date: Sat, 10 Oct 2026 18:48:10 GMT
+
+event: message
+data: {"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true},"resources":{"listChanged":true}},"serverInfo":{"name":"careloop","version":"0.0.1"}},"jsonrpc":"2.0","id":1}
+
+
+
+## B. initialize, Origin: https://evil.example
+HTTP/1.1 403 Forbidden
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 92
+ETag: W/"5c-o9HfQK+VifI2qmdMZEQhnsLQjpk"
+Date: Sat, 10 Oct 2026 18:48:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Invalid Origin: evil.example"},"id":null}
+
+## C. tools/list with no session id
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 96
+ETag: W/"60-cM3mY3nrT+y5tj7sQxUYwEtMycc"
+Date: Sat, 10 Oct 2026 18:48:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Bad Request: Session ID required"},"id":null}
+
+## D. tools/list with session b351e312-2dfb-4239-b32a-226b4d1b1a1e but MCP-Protocol-Version: 1999-01-01
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+content-type: application/json
+content-length: 150
+Date: Sat, 10 Oct 2026 18:48:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Bad Request: Unsupported protocol version: 1999-01-01 (supported versions: 2025-11-25)"},"id":null}
+
+## E. DELETE session, then reuse it
+DELETE -> 200
+reuse after DELETE -> 404
+
+## F. preflight from allowlisted host origin
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: http://localhost:8080
+Access-Control-Expose-Headers: mcp-session-id
+Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS
+Access-Control-Allow-Headers: content-type, accept, authorization, mcp-session-id, mcp-protocol-version, last-event-id
+## G. preflight from https://evil.example
+403

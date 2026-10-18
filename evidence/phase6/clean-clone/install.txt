@@ -1,0 +1,31 @@
+✓ Lockfile passes supply-chain policies (verified 3d ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +149
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Packages are cloned from the content-addressable store to the virtual store.
+  Content-addressable store is at: <home>/Library/pnpm/store/v11
+  Virtual store is at:             node_modules/.pnpm
+Progress: resolved 149, reused 149, downloaded 0, added 148
+Progress: resolved 149, reused 149, downloaded 0, added 149, done
+
+dependencies:
++ @anthropic-ai/sdk 0.133.0
++ @modelcontextprotocol/client 2.3.1
++ @modelcontextprotocol/express 2.0.2
++ @modelcontextprotocol/ext-apps 2.0.3
++ @modelcontextprotocol/node 2.1.1
++ @modelcontextprotocol/server 2.3.1
++ express 5.3.0
++ zod 4.6.5
+
+devDependencies:
++ @types/express 5.0.6
++ @types/node 26.6.4
++ esbuild 0.28.2
++ playwright 1.61.0
++ tsx 4.23.15
++ typescript 7.0.2
++ vitest 5.0.3
+
+Done in 1.6s using pnpm v11.28.5

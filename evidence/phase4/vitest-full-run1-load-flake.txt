@@ -1,0 +1,32 @@
+$ pnpm -s build:ui && vitest run
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (598.2 KiB)
+
+ RUN  v5.0.3 <repo>
+
+ ❯ test/llm-runner.test.ts (40 tests | 1 failed) 16336ms
+   ❯ live evaluation gate (subprocess refusal paths; never calls the API) (5)
+     × refuses a comma-separated case list (no multi-case execution) 5047ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/llm-runner.test.ts > live evaluation gate (subprocess refusal paths; never calls the API) > refuses a comma-separated case list (no multi-case execution)
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/llm-runner.test.ts:413:5
+    411|     });
+    412|
+    413|     it('refuses a comma-separated case list (no multi-case execution)'…
+       |     ^
+    414|         const r = runGate(['--live', '--case', 'golden,injection'], { …
+    415|         expect(r.code).toBe(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 9 passed (10)
+      Tests  1 failed | 220 passed (221)
+   Start at  21:14:52
+   Duration  20.08s (tests 72%, import 18%, transform 9%, worker 1%)
+
+[ELIFECYCLE] Test failed. See above for more details.

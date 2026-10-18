@@ -1,0 +1,83 @@
+import { afterEach, describe, expect, it } from 'vitest';
+
+import { connect, readRecentEvents } from '../src/client.js';
+import { EXPECTED_TOOLS, SPEC_VERSION, startHarness, type Harness } from './helpers.js';
+
+let harness: Harness | undefined;
+afterEach(async () => {
+    await harness?.stop();
+    harness = undefined;
+});
+
+describe('SDK client against CareLoop server', () => {
+    it('negotiates protocol version 2025-11-25 and exposes exactly the expected tools', async () => {
+        harness = await startHarness();
+        const { client, transport } = await connect(harness.url);
+
+        expect(client.getNegotiatedProtocolVersion()).toBe(SPEC_VERSION);
+        const { tools } = await client.listTools();
+        expect(tools.map(t => t.name).sort()).toEqual(EXPECTED_TOOLS);
+
+        await client.close();
+        expect(transport).toBeDefined();
+    });
+
+    it('sends MCP-Protocol-Version on every request after initialize', async () => {
+        harness = await startHarness();
+        const { client, wire } = await connect(harness.url);
+        await client.listTools();
+        await client.close();
+
+        const [initPost, ...rest] = wire;
+        expect(initPost?.method).toBe('POST');
+        expect(rest.length).toBeGreaterThan(0);
+        for (const record of rest) expect(record.requestHeaders['mcp-protocol-version']).toBe(SPEC_VERSION);
+    });
+
+    it('log_event stores a synthetic event and returns it as structured content', async () => {
+        harness = await startHarness();
+        const { client } = await connect(harness.url);
+
+        const result = await client.callTool({ name: 'log_event', arguments: { kind: 'meal', note: 'synthetic: ate lunch' } });
+
+        expect(result.isError ?? false).toBe(false);
+        expect(result.structuredContent).toMatchObject({ kind: 'meal', note: 'synthetic: ate lunch' });
+        expect(harness.store.recent(1)[0]?.note).toBe('synthetic: ate lunch');
+        await client.close();
+    });
+
+    it('rejects invalid log_event input instead of storing it', async () => {
+        harness = await startHarness();
+        const { client } = await connect(harness.url);
+
+        let rejected = false;
+        try {
+            const result = await client.callTool({ name: 'log_event', arguments: { kind: 'not-a-kind', note: '' } });
+            rejected = result.isError === true;
+        } catch {
+            rejected = true;
+        }
+
+        expect(rejected).toBe(true);
+        expect(harness.store.recent(10)).toHaveLength(0);
+        await client.close();
+    });
+
+    it('persists events to disk: a fresh server and fresh client read what an earlier session wrote', async () => {
+        harness = await startHarness();
+        const { dbPath } = harness;
+        const writer = await connect(harness.url);
+        await writer.client.callTool({ name: 'log_event', arguments: { kind: 'medication', note: 'synthetic NONCE-T1' } });
+        await writer.transport.terminateSession();
+        await writer.client.close();
+        await harness.stop();
+
+        harness = await startHarness(dbPath);
+        const reader = await connect(harness.url);
+        const events = await readRecentEvents(reader.client);
+
+        expect(reader.transport.sessionId).not.toBe(writer.transport.sessionId);
+        expect(events.some(e => e.note === 'synthetic NONCE-T1')).toBe(true);
+        await reader.client.close();
+    });
+});

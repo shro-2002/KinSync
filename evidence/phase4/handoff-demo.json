@@ -1,0 +1,884 @@
+{
+  "when": "2026-10-14T16:31:11.976Z",
+  "checks": [
+    {
+      "check": "A: spoken request -> proposal, stops awaiting a human",
+      "pass": true
+    },
+    {
+      "check": "B: model attempts at decide_handoff / respond_to_handoff are policy_denied HUMAN_ONLY_TOOL",
+      "pass": true
+    },
+    {
+      "check": "C: handoff is PENDING_APPROVAL, requested by Ravi, Priya on duty, proposed Arjun",
+      "pass": true
+    },
+    {
+      "check": "D: viewer cannot approve (FORBIDDEN)",
+      "pass": true
+    },
+    {
+      "check": "D: recipient cannot approve their own handoff (FORBIDDEN)",
+      "pass": true
+    },
+    {
+      "check": "D: recipient cannot accept before approval (INVALID_TRANSITION)",
+      "pass": true
+    },
+    {
+      "check": "E: coordinator approves -> PENDING_ACCEPTANCE (not complete yet)",
+      "pass": true
+    },
+    {
+      "check": "E: approving twice with the same key replays, no second transition",
+      "pass": true
+    },
+    {
+      "check": "F: approver cannot also accept for the recipient (FORBIDDEN)",
+      "pass": true
+    },
+    {
+      "check": "G: recipient accepts -> COMPLETED",
+      "pass": true
+    },
+    {
+      "check": "G: a second decision on a finished handoff is INVALID_TRANSITION",
+      "pass": true
+    },
+    {
+      "check": "H: after restart the handoff is COMPLETED with a 3-entry history",
+      "pass": true
+    },
+    {
+      "check": "I: nothing was sent or booked (no outbox rows, no drafts)",
+      "pass": true
+    },
+    {
+      "check": "I: audit trail records the denials and the successes",
+      "pass": true
+    }
+  ],
+  "finalHandoff": {
+    "id": "hof_d0656945ee51",
+    "status": "COMPLETED",
+    "status_text": "Arjun accepted responsibility for this task. This records a family agreement only; it does not confirm any care was provided.",
+    "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+    "requested_by": {
+      "member_id": "mem_ravi",
+      "name": "Ravi"
+    },
+    "current_owner": {
+      "member_id": "mem_priya",
+      "name": "Priya"
+    },
+    "proposed_recipient": {
+      "member_id": "mem_arjun",
+      "name": "Arjun"
+    },
+    "recipient_basis": "named",
+    "approval": {
+      "state": "approved",
+      "by": {
+        "member_id": "mem_priya",
+        "name": "Priya"
+      },
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_mode": "session",
+      "reason": "Priya is travelling Thursday"
+    },
+    "acceptance": {
+      "state": "accepted",
+      "by": {
+        "member_id": "mem_arjun",
+        "name": "Arjun"
+      },
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_mode": "session",
+      "reason": null
+    },
+    "eligible": {
+      "approve_or_reject": [],
+      "accept_or_decline": []
+    },
+    "history": [
+      {
+        "event": "propose",
+        "from": null,
+        "to": "PENDING_APPROVAL",
+        "by": {
+          "member_id": "mem_ravi",
+          "name": "Ravi"
+        },
+        "actor_mode": "session",
+        "simulated_by": null,
+        "reason": null,
+        "at": "2026-10-12T04:00:00.000Z"
+      },
+      {
+        "event": "approve",
+        "from": "PENDING_APPROVAL",
+        "to": "PENDING_ACCEPTANCE",
+        "by": {
+          "member_id": "mem_priya",
+          "name": "Priya"
+        },
+        "actor_mode": "session",
+        "simulated_by": null,
+        "reason": "Priya is travelling Thursday",
+        "at": "2026-10-12T04:00:00.000Z"
+      },
+      {
+        "event": "accept",
+        "from": "PENDING_ACCEPTANCE",
+        "to": "COMPLETED",
+        "by": {
+          "member_id": "mem_arjun",
+          "name": "Arjun"
+        },
+        "actor_mode": "session",
+        "simulated_by": null,
+        "reason": null,
+        "at": "2026-10-12T04:00:00.000Z"
+      }
+    ],
+    "created_at": "2026-10-12T04:00:00.000Z",
+    "updated_at": "2026-10-12T04:00:00.000Z"
+  },
+  "audit": [
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_ravi",
+      "action": "propose_handoff",
+      "target_id": "hof_d0656945ee51",
+      "outcome": "ok",
+      "detail": "{\"key\":\"turn_demo000000001.de6341efae517c6d085e9780\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_meera",
+      "action": "decide_handoff",
+      "target_id": null,
+      "outcome": "denied",
+      "detail": "{\"reason\":\"role\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_arjun",
+      "action": "decide_handoff",
+      "target_id": null,
+      "outcome": "denied",
+      "detail": "{\"reason\":\"role\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_arjun",
+      "action": "respond_to_handoff",
+      "target_id": null,
+      "outcome": "conflict",
+      "detail": "{\"key\":\"demo:mem_arjun:respond_to_handoff\",\"code\":\"INVALID_TRANSITION\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "decide_handoff",
+      "target_id": "hof_d0656945ee51",
+      "outcome": "ok",
+      "detail": "{\"key\":\"demo:priya:approve\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "decide_handoff",
+      "target_id": null,
+      "outcome": "replayed",
+      "detail": "{\"key\":\"demo:priya:approve\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "respond_to_handoff",
+      "target_id": null,
+      "outcome": "denied",
+      "detail": "{\"key\":\"demo:mem_priya:respond_to_handoff\",\"code\":\"FORBIDDEN\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_arjun",
+      "action": "respond_to_handoff",
+      "target_id": "hof_d0656945ee51",
+      "outcome": "ok",
+      "detail": "{\"key\":\"demo:arjun:accept\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "decide_handoff",
+      "target_id": null,
+      "outcome": "conflict",
+      "detail": "{\"key\":\"demo:priya:late-reject\",\"code\":\"INVALID_TRANSITION\"}"
+    }
+  ],
+  "transcript": [
+    {
+      "as": "mem_ravi (voice -> planner)",
+      "utterance": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+      "reply": "I've prepared a proposal for Arjun to take over this task. A person needs to approve it, and Arjun needs to accept it, before anything changes. Nothing has been sent or arranged.",
+      "trace": {
+        "format": "careloop.tool-trace/v1",
+        "turn_id": "turn_demo000000001",
+        "actor_member_id": "mem_ravi",
+        "household_id": "hh_rao",
+        "utterance_sha256": "a56d29875c850429bbbdb17f2794febe7eb0e3bdd562e6bf626e6968794fbc05",
+        "planner": "deterministic/care-handoff/v1",
+        "steps": [
+          {
+            "seq": 1,
+            "tool": "get_household_status",
+            "model_args": {},
+            "effective_args": {
+              "household_id": "hh_rao"
+            },
+            "idempotency_key": null,
+            "decision": "executed",
+            "policy_reason": null,
+            "discarded_args": [],
+            "outcome": "ok",
+            "error_code": null
+          },
+          {
+            "seq": 2,
+            "tool": "propose_handoff",
+            "model_args": {
+              "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+              "proposed_recipient": "mem_arjun"
+            },
+            "effective_args": {
+              "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+              "proposed_recipient": "mem_arjun",
+              "household_id": "hh_rao",
+              "idempotency_key": "turn_demo000000001.de6341efae517c6d085e9780"
+            },
+            "idempotency_key": "turn_demo000000001.de6341efae517c6d085e9780",
+            "decision": "executed",
+            "policy_reason": null,
+            "discarded_args": [],
+            "outcome": "ok",
+            "error_code": null
+          }
+        ],
+        "stop_reason": "awaiting_approval"
+      }
+    },
+    {
+      "as": "compromised model",
+      "trace": {
+        "format": "careloop.tool-trace/v1",
+        "turn_id": "turn_attack000000001",
+        "actor_member_id": "mem_ravi",
+        "household_id": "hh_rao",
+        "utterance_sha256": "7652db4d534abad95dec978b8c99032a346626c5cb3951402e9798d6398eb0a3",
+        "planner": "malicious/self-approves",
+        "steps": [
+          {
+            "seq": 1,
+            "tool": "get_handoffs",
+            "model_args": {},
+            "effective_args": {
+              "household_id": "hh_rao"
+            },
+            "idempotency_key": null,
+            "decision": "executed",
+            "policy_reason": null,
+            "discarded_args": [],
+            "outcome": "ok",
+            "error_code": null
+          },
+          {
+            "seq": 2,
+            "tool": "decide_handoff",
+            "model_args": {
+              "handoff_id": "hof_d0656945ee51",
+              "decision": "approve"
+            },
+            "effective_args": null,
+            "idempotency_key": null,
+            "decision": "policy_denied",
+            "policy_reason": "HUMAN_ONLY_TOOL",
+            "discarded_args": [],
+            "outcome": "not_called",
+            "error_code": null
+          },
+          {
+            "seq": 3,
+            "tool": "respond_to_handoff",
+            "model_args": {
+              "handoff_id": "hof_d0656945ee51",
+              "response": "accept"
+            },
+            "effective_args": null,
+            "idempotency_key": null,
+            "decision": "policy_denied",
+            "policy_reason": "HUMAN_ONLY_TOOL",
+            "discarded_args": [],
+            "outcome": "not_called",
+            "error_code": null
+          }
+        ],
+        "stop_reason": "completed"
+      }
+    },
+    {
+      "as": "mem_priya",
+      "tool": "get_handoffs",
+      "args": {
+        "household_id": "hh_rao"
+      },
+      "isError": false,
+      "result": {
+        "handoffs": [
+          {
+            "id": "hof_d0656945ee51",
+            "status": "PENDING_APPROVAL",
+            "status_text": "Proposed: Arjun would take over this task. Waiting for a human approver. Nothing has been sent or arranged.",
+            "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+            "requested_by": {
+              "member_id": "mem_ravi",
+              "name": "Ravi"
+            },
+            "current_owner": {
+              "member_id": "mem_priya",
+              "name": "Priya"
+            },
+            "proposed_recipient": {
+              "member_id": "mem_arjun",
+              "name": "Arjun"
+            },
+            "recipient_basis": "named",
+            "approval": {
+              "state": "pending",
+              "by": null,
+              "at": null,
+              "actor_mode": null,
+              "reason": null
+            },
+            "acceptance": {
+              "state": "not_requested",
+              "by": null,
+              "at": null,
+              "actor_mode": null,
+              "reason": null
+            },
+            "eligible": {
+              "approve_or_reject": [
+                "mem_priya",
+                "mem_ravi"
+              ],
+              "accept_or_decline": []
+            },
+            "history": [
+              {
+                "event": "propose",
+                "from": null,
+                "to": "PENDING_APPROVAL",
+                "by": {
+                  "member_id": "mem_ravi",
+                  "name": "Ravi"
+                },
+                "actor_mode": "session",
+                "simulated_by": null,
+                "reason": null,
+                "at": "2026-10-12T04:00:00.000Z"
+              }
+            ],
+            "created_at": "2026-10-12T04:00:00.000Z",
+            "updated_at": "2026-10-12T04:00:00.000Z"
+          }
+        ],
+        "notice": "KinSync records who agrees to take responsibility for a care task. It sends no messages, books nothing, and does not confirm that any care was given."
+      }
+    },
+    {
+      "as": "mem_meera",
+      "tool": "decide_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "handoff_id": "hof_d0656945ee51",
+        "idempotency_key": "demo:mem_meera:decide_handoff",
+        "decision": "approve"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "FORBIDDEN",
+          "message": "Role viewer may not decide_handoff",
+          "details": {
+            "reason": "role",
+            "role": "viewer"
+          }
+        }
+      }
+    },
+    {
+      "as": "mem_arjun",
+      "tool": "decide_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "handoff_id": "hof_d0656945ee51",
+        "idempotency_key": "demo:mem_arjun:decide_handoff",
+        "decision": "approve"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "FORBIDDEN",
+          "message": "Role caregiver may not decide_handoff",
+          "details": {
+            "reason": "role",
+            "role": "caregiver"
+          }
+        }
+      }
+    },
+    {
+      "as": "mem_arjun",
+      "tool": "respond_to_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "handoff_id": "hof_d0656945ee51",
+        "idempotency_key": "demo:mem_arjun:respond_to_handoff",
+        "response": "accept"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "INVALID_TRANSITION",
+          "message": "Handoff is PENDING_APPROVAL; accept is not allowed",
+          "details": {
+            "from": "PENDING_APPROVAL",
+            "event": "accept"
+          }
+        }
+      }
+    },
+    {
+      "as": "mem_priya",
+      "tool": "decide_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "handoff_id": "hof_d0656945ee51",
+        "idempotency_key": "demo:priya:approve",
+        "decision": "approve",
+        "reason": "Priya is travelling Thursday"
+      },
+      "isError": false,
+      "result": {
+        "handoff": {
+          "id": "hof_d0656945ee51",
+          "status": "PENDING_ACCEPTANCE",
+          "status_text": "Approved by Priya. Waiting for Arjun to accept or decline; Arjun is not responsible until they accept.",
+          "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+          "requested_by": {
+            "member_id": "mem_ravi",
+            "name": "Ravi"
+          },
+          "current_owner": {
+            "member_id": "mem_priya",
+            "name": "Priya"
+          },
+          "proposed_recipient": {
+            "member_id": "mem_arjun",
+            "name": "Arjun"
+          },
+          "recipient_basis": "named",
+          "approval": {
+            "state": "approved",
+            "by": {
+              "member_id": "mem_priya",
+              "name": "Priya"
+            },
+            "at": "2026-10-12T04:00:00.000Z",
+            "actor_mode": "session",
+            "reason": "Priya is travelling Thursday"
+          },
+          "acceptance": {
+            "state": "pending",
+            "by": null,
+            "at": null,
+            "actor_mode": null,
+            "reason": null
+          },
+          "eligible": {
+            "approve_or_reject": [],
+            "accept_or_decline": [
+              "mem_arjun"
+            ]
+          },
+          "history": [
+            {
+              "event": "propose",
+              "from": null,
+              "to": "PENDING_APPROVAL",
+              "by": {
+                "member_id": "mem_ravi",
+                "name": "Ravi"
+              },
+              "actor_mode": "session",
+              "simulated_by": null,
+              "reason": null,
+              "at": "2026-10-12T04:00:00.000Z"
+            },
+            {
+              "event": "approve",
+              "from": "PENDING_APPROVAL",
+              "to": "PENDING_ACCEPTANCE",
+              "by": {
+                "member_id": "mem_priya",
+                "name": "Priya"
+              },
+              "actor_mode": "session",
+              "simulated_by": null,
+              "reason": "Priya is travelling Thursday",
+              "at": "2026-10-12T04:00:00.000Z"
+            }
+          ],
+          "created_at": "2026-10-12T04:00:00.000Z",
+          "updated_at": "2026-10-12T04:00:00.000Z"
+        },
+        "nothing_dispatched": true,
+        "notice": "KinSync records who agrees to take responsibility for a care task. It sends no messages, books nothing, and does not confirm that any care was given.",
+        "replayed": false
+      }
+    },
+    {
+      "as": "mem_priya",
+      "tool": "decide_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "handoff_id": "hof_d0656945ee51",
+        "idempotency_key": "demo:priya:approve",
+        "decision": "approve",
+        "reason": "Priya is travelling Thursday"
+      },
+      "isError": false,
+      "result": {
+        "handoff": {
+          "id": "hof_d0656945ee51",
+          "status": "PENDING_ACCEPTANCE",
+          "status_text": "Approved by Priya. Waiting for Arjun to accept or decline; Arjun is not responsible until they accept.",
+          "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+          "requested_by": {
+            "member_id": "mem_ravi",
+            "name": "Ravi"
+          },
+          "current_owner": {
+            "member_id": "mem_priya",
+            "name": "Priya"
+          },
+          "proposed_recipient": {
+            "member_id": "mem_arjun",
+            "name": "Arjun"
+          },
+          "recipient_basis": "named",
+          "approval": {
+            "state": "approved",
+            "by": {
+              "member_id": "mem_priya",
+              "name": "Priya"
+            },
+            "at": "2026-10-12T04:00:00.000Z",
+            "actor_mode": "session",
+            "reason": "Priya is travelling Thursday"
+          },
+          "acceptance": {
+            "state": "pending",
+            "by": null,
+            "at": null,
+            "actor_mode": null,
+            "reason": null
+          },
+          "eligible": {
+            "approve_or_reject": [],
+            "accept_or_decline": [
+              "mem_arjun"
+            ]
+          },
+          "history": [
+            {
+              "event": "propose",
+              "from": null,
+              "to": "PENDING_APPROVAL",
+              "by": {
+                "member_id": "mem_ravi",
+                "name": "Ravi"
+              },
+              "actor_mode": "session",
+              "simulated_by": null,
+              "reason": null,
+              "at": "2026-10-12T04:00:00.000Z"
+            },
+            {
+              "event": "approve",
+              "from": "PENDING_APPROVAL",
+              "to": "PENDING_ACCEPTANCE",
+              "by": {
+                "member_id": "mem_priya",
+                "name": "Priya"
+              },
+              "actor_mode": "session",
+              "simulated_by": null,
+              "reason": "Priya is travelling Thursday",
+              "at": "2026-10-12T04:00:00.000Z"
+            }
+          ],
+          "created_at": "2026-10-12T04:00:00.000Z",
+          "updated_at": "2026-10-12T04:00:00.000Z"
+        },
+        "nothing_dispatched": true,
+        "notice": "KinSync records who agrees to take responsibility for a care task. It sends no messages, books nothing, and does not confirm that any care was given.",
+        "replayed": true
+      }
+    },
+    {
+      "as": "mem_priya",
+      "tool": "respond_to_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "handoff_id": "hof_d0656945ee51",
+        "idempotency_key": "demo:mem_priya:respond_to_handoff",
+        "response": "accept"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "FORBIDDEN",
+          "message": "Only the proposed recipient may accept or decline",
+          "details": {
+            "reason": "not_proposed_recipient"
+          }
+        }
+      }
+    },
+    {
+      "as": "mem_arjun",
+      "tool": "respond_to_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "handoff_id": "hof_d0656945ee51",
+        "idempotency_key": "demo:arjun:accept",
+        "response": "accept"
+      },
+      "isError": false,
+      "result": {
+        "handoff": {
+          "id": "hof_d0656945ee51",
+          "status": "COMPLETED",
+          "status_text": "Arjun accepted responsibility for this task. This records a family agreement only; it does not confirm any care was provided.",
+          "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+          "requested_by": {
+            "member_id": "mem_ravi",
+            "name": "Ravi"
+          },
+          "current_owner": {
+            "member_id": "mem_priya",
+            "name": "Priya"
+          },
+          "proposed_recipient": {
+            "member_id": "mem_arjun",
+            "name": "Arjun"
+          },
+          "recipient_basis": "named",
+          "approval": {
+            "state": "approved",
+            "by": {
+              "member_id": "mem_priya",
+              "name": "Priya"
+            },
+            "at": "2026-10-12T04:00:00.000Z",
+            "actor_mode": "session",
+            "reason": "Priya is travelling Thursday"
+          },
+          "acceptance": {
+            "state": "accepted",
+            "by": {
+              "member_id": "mem_arjun",
+              "name": "Arjun"
+            },
+            "at": "2026-10-12T04:00:00.000Z",
+            "actor_mode": "session",
+            "reason": null
+          },
+          "eligible": {
+            "approve_or_reject": [],
+            "accept_or_decline": []
+          },
+          "history": [
+            {
+              "event": "propose",
+              "from": null,
+              "to": "PENDING_APPROVAL",
+              "by": {
+                "member_id": "mem_ravi",
+                "name": "Ravi"
+              },
+              "actor_mode": "session",
+              "simulated_by": null,
+              "reason": null,
+              "at": "2026-10-12T04:00:00.000Z"
+            },
+            {
+              "event": "approve",
+              "from": "PENDING_APPROVAL",
+              "to": "PENDING_ACCEPTANCE",
+              "by": {
+                "member_id": "mem_priya",
+                "name": "Priya"
+              },
+              "actor_mode": "session",
+              "simulated_by": null,
+              "reason": "Priya is travelling Thursday",
+              "at": "2026-10-12T04:00:00.000Z"
+            },
+            {
+              "event": "accept",
+              "from": "PENDING_ACCEPTANCE",
+              "to": "COMPLETED",
+              "by": {
+                "member_id": "mem_arjun",
+                "name": "Arjun"
+              },
+              "actor_mode": "session",
+              "simulated_by": null,
+              "reason": null,
+              "at": "2026-10-12T04:00:00.000Z"
+            }
+          ],
+          "created_at": "2026-10-12T04:00:00.000Z",
+          "updated_at": "2026-10-12T04:00:00.000Z"
+        },
+        "nothing_dispatched": true,
+        "notice": "KinSync records who agrees to take responsibility for a care task. It sends no messages, books nothing, and does not confirm that any care was given.",
+        "replayed": false
+      }
+    },
+    {
+      "as": "mem_priya",
+      "tool": "decide_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "handoff_id": "hof_d0656945ee51",
+        "idempotency_key": "demo:priya:late-reject",
+        "decision": "reject"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "INVALID_TRANSITION",
+          "message": "Handoff is COMPLETED; reject is not allowed",
+          "details": {
+            "from": "COMPLETED",
+            "event": "reject"
+          }
+        }
+      }
+    },
+    {
+      "as": "mem_meera",
+      "tool": "get_handoffs",
+      "args": {
+        "household_id": "hh_rao"
+      },
+      "isError": false,
+      "result": {
+        "handoffs": [
+          {
+            "id": "hof_d0656945ee51",
+            "status": "COMPLETED",
+            "status_text": "Arjun accepted responsibility for this task. This records a family agreement only; it does not confirm any care was provided.",
+            "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+            "requested_by": {
+              "member_id": "mem_ravi",
+              "name": "Ravi"
+            },
+            "current_owner": {
+              "member_id": "mem_priya",
+              "name": "Priya"
+            },
+            "proposed_recipient": {
+              "member_id": "mem_arjun",
+              "name": "Arjun"
+            },
+            "recipient_basis": "named",
+            "approval": {
+              "state": "approved",
+              "by": {
+                "member_id": "mem_priya",
+                "name": "Priya"
+              },
+              "at": "2026-10-12T04:00:00.000Z",
+              "actor_mode": "session",
+              "reason": "Priya is travelling Thursday"
+            },
+            "acceptance": {
+              "state": "accepted",
+              "by": {
+                "member_id": "mem_arjun",
+                "name": "Arjun"
+              },
+              "at": "2026-10-12T04:00:00.000Z",
+              "actor_mode": "session",
+              "reason": null
+            },
+            "eligible": {
+              "approve_or_reject": [],
+              "accept_or_decline": []
+            },
+            "history": [
+              {
+                "event": "propose",
+                "from": null,
+                "to": "PENDING_APPROVAL",
+                "by": {
+                  "member_id": "mem_ravi",
+                  "name": "Ravi"
+                },
+                "actor_mode": "session",
+                "simulated_by": null,
+                "reason": null,
+                "at": "2026-10-12T04:00:00.000Z"
+              },
+              {
+                "event": "approve",
+                "from": "PENDING_APPROVAL",
+                "to": "PENDING_ACCEPTANCE",
+                "by": {
+                  "member_id": "mem_priya",
+                  "name": "Priya"
+                },
+                "actor_mode": "session",
+                "simulated_by": null,
+                "reason": "Priya is travelling Thursday",
+                "at": "2026-10-12T04:00:00.000Z"
+              },
+              {
+                "event": "accept",
+                "from": "PENDING_ACCEPTANCE",
+                "to": "COMPLETED",
+                "by": {
+                  "member_id": "mem_arjun",
+                  "name": "Arjun"
+                },
+                "actor_mode": "session",
+                "simulated_by": null,
+                "reason": null,
+                "at": "2026-10-12T04:00:00.000Z"
+              }
+            ],
+            "created_at": "2026-10-12T04:00:00.000Z",
+            "updated_at": "2026-10-12T04:00:00.000Z"
+          }
+        ],
+        "notice": "KinSync records who agrees to take responsibility for a care task. It sends no messages, books nothing, and does not confirm that any care was given."
+      }
+    }
+  ]
+}

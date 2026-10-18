@@ -1,0 +1,30 @@
+{
+ "handoffs": [
+  {
+   "id": "hof_2140bc86dcce",
+   "status": "COMPLETED",
+   "version": 3
+  }
+ ],
+ "transitions": [
+  {
+   "event": "propose",
+   "who": "mem_ravi",
+   "mode": "session",
+   "at": "2026-10-12T04:00:03.865Z"
+  },
+  {
+   "event": "approve",
+   "who": "mem_priya",
+   "mode": "session",
+   "at": "2026-10-12T04:00:37.252Z"
+  },
+  {
+   "event": "accept",
+   "who": "mem_arjun",
+   "mode": "simulated",
+   "at": "2026-10-12T04:00:37.919Z"
+  }
+ ],
+ "lastAt": "2026-10-12T04:00:37.919Z"
+}

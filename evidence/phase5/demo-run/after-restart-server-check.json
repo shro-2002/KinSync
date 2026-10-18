@@ -1,0 +1,10 @@
+{
+ "same_handoff_persisted": true,
+ "same_three_transitions": true,
+ "clock_continuity": {
+  "server_generated_at": "2026-10-12T04:01:53.154Z",
+  "last_transition_before_restart": "2026-10-12T04:00:37.919Z",
+  "monotonic": true
+ },
+ "still_monday_priya_on_duty": true
+}

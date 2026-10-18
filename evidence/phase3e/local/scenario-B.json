@@ -1,0 +1,122 @@
+{
+  "case": "status",
+  "provider": "ollama",
+  "model": "llama3.1",
+  "effort": "medium",
+  "limits": {
+    "maxModelIterations": 6,
+    "maxToolCalls": 8,
+    "maxOutputTokensPerCall": 2048,
+    "maxInputTokensPerTurn": 60000,
+    "maxOutputTokensPerTurn": 8000
+  },
+  "result": {
+    "case": "status",
+    "utterance": "What's happening in our household today? Just tell me, don't change anything.",
+    "provider": "ollama",
+    "model": "llama3.1",
+    "model_explicit": false,
+    "wall_clock_ms": 4499,
+    "stop": "completed",
+    "reply": {
+      "action": "passed",
+      "violations": [],
+      "text": "According to the tool results, Priya is the duty contact for today in the household.",
+      "originalText": "According to the tool results, Priya is the duty contact for today in the household.",
+      "source": "model"
+    },
+    "golden": null,
+    "read_only_check": {
+      "expected_no_writes": true,
+      "writes_made": [],
+      "passed": true
+    },
+    "record_counts": {
+      "before": {
+        "care_events": 0,
+        "appointment_requests": 0,
+        "notification_drafts": 0,
+        "approvals": 0,
+        "simulated_outbox": 0
+      },
+      "after": {
+        "care_events": 0,
+        "appointment_requests": 0,
+        "notification_drafts": 0,
+        "approvals": 0,
+        "simulated_outbox": 0
+      }
+    },
+    "tool_calls": [
+      {
+        "tool": "get_household_status",
+        "decision": "executed",
+        "outcome": "ok"
+      }
+    ],
+    "model_iterations": 2,
+    "iteration_latencies_ms": [
+      1223,
+      3234
+    ],
+    "usage": {
+      "iterations": [
+        {
+          "iteration": 1,
+          "model": "llama3.1",
+          "stop": "tool_use",
+          "toolCalls": 1,
+          "latencyMs": 1223,
+          "inputTokens": 1129,
+          "outputTokens": 15,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        {
+          "iteration": 2,
+          "model": "llama3.1",
+          "stop": "end_turn",
+          "toolCalls": 0,
+          "latencyMs": 3234,
+          "inputTokens": 660,
+          "outputTokens": 19,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        }
+      ],
+      "totals": {
+        "inputTokens": 1789,
+        "outputTokens": 34,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0
+      },
+      "estimatedCostUsd": null
+    },
+    "provider_error": null,
+    "trace": {
+      "format": "careloop.tool-trace/v1",
+      "turn_id": "turn_51fd5b8c46e84476abe52112df544587",
+      "actor_member_id": "mem_ravi",
+      "household_id": "hh_rao",
+      "utterance_sha256": "84679173dfa921d89c1c9f51c8878757e0905c31191a4c62083c4e6305ad62f9",
+      "planner": "ollama/chat-tool-use/v1",
+      "steps": [
+        {
+          "seq": 1,
+          "tool": "get_household_status",
+          "model_args": {},
+          "effective_args": {
+            "household_id": "hh_rao"
+          },
+          "idempotency_key": null,
+          "decision": "executed",
+          "policy_reason": null,
+          "discarded_args": [],
+          "outcome": "ok",
+          "error_code": null
+        }
+      ],
+      "stop_reason": "completed"
+    }
+  }
+}

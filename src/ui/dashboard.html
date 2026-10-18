@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>KinSync dashboard</title>
+  <style>
+    :root {
+      --fg: #1c2024; --muted: #5a6370; --line: #d8dee4; --surface: #f6f8fa; --bg: #ffffff;
+      --accent: #0b6e4f; --accent-soft: #e3f3ec; --warn: #8a4b00; --warn-soft: #fff4e0;
+      --danger: #a1260d; --danger-soft: #fdecea; --focus: #1f6feb;
+      --radius: 10px; --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #e6edf3; --muted: #9aa4af; --line: #343b44; --surface: #161b22; --bg: #0d1117;
+        --accent: #3fb950; --accent-soft: #12261b; --warn: #e3b341; --warn-soft: #2b2111;
+        --danger: #ff7b72; --danger-soft: #2d1414; --focus: #58a6ff;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--fg); background: var(--bg); }
+    main { padding: var(--s4); max-width: 920px; margin: 0 auto; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+    .muted { color: var(--muted); font-size: 13px; }
+
+    .top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s3); }
+    .eyebrow { margin: 0; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; color: var(--accent); }
+    h1 { font-size: 22px; line-height: 1.25; margin: 2px 0 0; }
+    .pitch { margin: var(--s1) 0 0; color: var(--muted); font-size: 13px; max-width: 60ch; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: var(--s3) 0 0; }
+    .chips li { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; color: var(--muted); }
+
+    .identity { margin: var(--s4) 0 0; padding: var(--s2) var(--s3); border: 2px dashed var(--warn); border-radius: var(--radius); background: var(--warn-soft); display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); align-items: center; }
+    .identity .tag { font-weight: 800; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--warn); }
+    .identity label { font-weight: 600; }
+    .identity .muted { flex-basis: 100%; margin: 0; }
+    select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); min-height: 40px; }
+
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--s2); margin: var(--s4) 0 0; }
+    .stat { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2) var(--s3); background: var(--surface); }
+    .stat b { display: block; font-size: 20px; }
+    #duty { margin: 0; font-weight: 600; }
+
+    h2 { font-size: 13px; margin: var(--s5) 0 var(--s2); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    #handoff-msg { margin: var(--s3) 0 0; font-weight: 600; }
+    #handoff-msg:empty { display: none; }
+    #handoff-msg.ok { color: var(--accent); }
+    #handoff-msg.err { color: var(--danger); }
+
+    .cards { list-style: none; padding: 0; margin: 0; }
+    .handoff { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s4); margin: 0 0 var(--s3); background: var(--bg); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+    .handoff[data-status="PENDING_APPROVAL"], .handoff[data-status="PENDING_ACCEPTANCE"] { border-left: 5px solid var(--warn); }
+    .handoff[data-status="COMPLETED"] { border-left: 5px solid var(--accent); }
+    .handoff[data-status="REJECTED"], .handoff[data-status="DECLINED"] { border-left: 5px solid var(--danger); }
+    .card-top { display: flex; justify-content: space-between; gap: var(--s2); flex-wrap: wrap; align-items: center; }
+    .badge { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px; background: var(--warn-soft); color: var(--warn); }
+    .handoff[data-status="COMPLETED"] .badge { background: var(--accent-soft); color: var(--accent); }
+    .handoff[data-status="REJECTED"] .badge, .handoff[data-status="DECLINED"] .badge { background: var(--danger-soft); color: var(--danger); }
+    blockquote { margin: var(--s3) 0 var(--s1); font-size: 18px; line-height: 1.4; font-weight: 600; }
+    .people { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: stretch; margin: var(--s3) 0; }
+    .person { flex: 1 1 160px; border: 1px solid var(--line); border-radius: 8px; padding: var(--s2) var(--s3); background: var(--surface); }
+    .person span { display: block; font-size: 12px; color: var(--muted); }
+    .person b { font-size: 16px; }
+    .arrow { align-self: center; font-size: 20px; color: var(--muted); }
+
+    .lifecycle { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s2); padding: 0; margin: var(--s3) 0; }
+    .lifecycle li { border-top: 4px solid var(--line); padding-top: var(--s2); font-size: 13px; display: flex; flex-direction: column; gap: 2px; }
+    .lifecycle li strong { font-size: 13px; }
+    .lifecycle li[data-state="done"] { border-top-color: var(--accent); }
+    .lifecycle li[data-state="current"] { border-top-color: var(--warn); }
+    .lifecycle li[data-state="current"] strong { color: var(--warn); }
+    .lifecycle li[data-state="stopped"] { border-top-color: var(--danger); }
+    .lifecycle li[data-state="todo"] { color: var(--muted); }
+    .status-text { margin: var(--s2) 0; }
+
+    .controls { border-top: 1px solid var(--line); padding-top: var(--s3); margin-top: var(--s3); display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; }
+    .controls p { flex-basis: 100%; margin: 0; }
+    button { font: inherit; font-weight: 600; min-height: 44px; min-width: 96px; padding: 8px 16px; border-radius: 8px; border: 2px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; }
+    button.primary { background: var(--accent); color: var(--bg); }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    #refresh { min-width: 0; }
+
+    details.audit { margin-top: var(--s3); font-size: 13px; }
+    summary { cursor: pointer; color: var(--muted); font-weight: 600; min-height: 32px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 12px; color: var(--muted); font-weight: 600; }
+    code { font-size: 12px; }
+
+    .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 var(--s5); }
+    .plain { list-style: none; padding: 0; margin: 0; }
+    .plain li { padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+    .plain li pre { white-space: pre-wrap; font: inherit; margin: 4px 0 0; color: var(--muted); }
+    .counts { display: flex; gap: 6px; flex-wrap: wrap; margin: var(--s2) 0; padding: 0; list-style: none; }
+    .counts li { border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; font-size: 13px; }
+    .counts strong { margin-right: 4px; }
+    .banner { font-size: 13px; border-left: 4px solid var(--accent); padding: var(--s2) var(--s3); margin-top: var(--s5); background: var(--surface); }
+
+    @media (max-width: 600px) {
+      main { padding: var(--s3); }
+      .top { flex-direction: column; }
+      .lifecycle { grid-template-columns: 1fr; }
+      .lifecycle li { border-top: 0; border-left: 4px solid var(--line); padding: 0 0 0 var(--s2); }
+      .lifecycle li[data-state="done"] { border-left-color: var(--accent); }
+      .lifecycle li[data-state="current"] { border-left-color: var(--warn); }
+      .lifecycle li[data-state="stopped"] { border-left-color: var(--danger); }
+      .arrow { display: none; }
+      .controls button { flex: 1 1 120px; }
+    }
+    @media (prefers-reduced-motion: no-preference) { button { transition: background-color .15s, transform .05s; } button:active:not(:disabled) { transform: translateY(1px); } }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="top">
+      <div>
+        <p class="eyebrow">KinSync</p>
+        <h1 id="household">Household</h1>
+        <p class="pitch">Family care handoffs that need a human yes: a proposal changes nothing until a person approves it and the new caregiver accepts it.</p>
+      </div>
+      <button id="refresh" type="button">Refresh</button>
+    </header>
+    <ul class="chips" aria-label="About this demo">
+      <li>Simulated Alexa+ workflow (not native Alexa+)</li>
+      <li>MCP Apps view</li>
+      <li>Synthetic data</li>
+      <li>Built from the CareLoop codebase</li>
+    </ul>
+
+    <section class="identity" id="actor-bar" aria-label="Who is acting" hidden>
+      <span class="tag" id="actor-tag">Simulated identity</span>
+      <label for="actor" id="actor-label"></label>
+      <select id="actor" hidden></select>
+      <p class="muted" id="actor-help"></p>
+    </section>
+
+    <div class="summary">
+      <div class="stat"><p id="duty"></p><span class="muted">from the family rota</span></div>
+      <div class="stat"><b id="open-count">0</b><span class="muted">open handoffs</span></div>
+      <div class="stat"><b id="done-count">0</b><span class="muted">completed agreements</span></div>
+    </div>
+    <p id="handoff-msg" role="status" aria-live="polite"></p>
+
+    <section aria-labelledby="h-active">
+      <h2 id="h-active">Care handoffs in progress</h2>
+      <div id="handoffs-active"></div>
+    </section>
+    <section aria-labelledby="h-history">
+      <h2 id="h-history">Agreements and history</h2>
+      <ul class="cards" id="handoffs-history"></ul>
+    </section>
+
+    <h2>Also in this household</h2>
+    <p class="muted" id="status" role="status" aria-live="polite">Waiting for tool result...</p>
+    <div class="grid2">
+      <section aria-labelledby="h-meds">
+        <h2 id="h-meds">Medication schedule (as entered by family)</h2>
+        <ul class="plain" id="meds"></ul>
+      </section>
+      <section aria-labelledby="h-approvals">
+        <h2 id="h-approvals">Messages waiting for approval</h2>
+        <ul class="plain" id="approvals"></ul>
+      </section>
+    </div>
+    <h2>Recent reports</h2>
+    <ul class="counts" id="counts" aria-label="Event counts by kind"></ul>
+    <div class="table-wrap">
+      <table aria-describedby="status">
+        <thead><tr><th scope="col">#</th><th scope="col">Kind</th><th scope="col">Note</th><th scope="col">Logged (UTC)</th></tr></thead>
+        <tbody id="events"></tbody>
+      </table>
+    </div>
+    <p class="banner">Synthetic demo data. Not medical advice. A handoff records who agreed to take responsibility; it never means care was given or anyone arrived. Nothing is sent, booked or dispatched.</p>
+  </main>
+  <script type="module">/*__BUNDLE__*/</script>
+</body>
+</html>

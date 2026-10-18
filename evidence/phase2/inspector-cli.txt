@@ -1,0 +1,58 @@
+# Inspector 2.10.1 with X-CareLoop-Actor header
+$ --method tools/list --app-info
+{"hasApp":false,"toolName":"record_care_event"}
+{"hasApp":false,"toolName":"get_household_status"}
+{"hasApp":false,"toolName":"prepare_appointment_request"}
+{"hasApp":false,"toolName":"get_duty_contact"}
+{"hasApp":false,"toolName":"draft_caregiver_notification"}
+{"hasApp":false,"toolName":"decide_approval"}
+{"hasApp":true,"toolName":"show_care_dashboard","resourceUri":"ui://careloop/dashboard.html","resourceMimeType":"text/html;profile=mcp-app"}
+exit=0
+
+$ --header "x-careloop-actor: mem_priya" --method tools/call --tool-name get_duty_contact --tool-arg household_id=hh_rao date=2026-10-15
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"date\":\"2026-10-15\",\"weekday\":4,\"basis\":\"duty_rota\",\"contact\":{\"member_id\":\"mem_arjun\",\"name\":\"Arjun\",\"relationship\":\"son\",\"contact_label\":\"Arjun phone (simulated)\"}}"
+    }
+  ],
+  "structuredContent": {
+    "date": "2026-10-15",
+    "weekday": 4,
+    "basis": "duty_rota",
+    "contact": {
+      "member_id": "mem_arjun",
+      "name": "Arjun",
+      "relationship": "son",
+      "contact_label": "Arjun phone (simulated)"
+    }
+  }
+}
+exit=0
+
+$ --header "x-careloop-actor: mem_wei" --method tools/call --tool-name get_household_status --tool-arg household_id=hh_rao
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Actor is not a member of household hh_rao\",\"details\":{\"reason\":\"household\"}}}"
+    }
+  ],
+  "isError": true
+}
+{"error":{"code":"tool_is_error","message":"Tool 'get_household_status' returned isError:true."}}
+exit=5
+
+$ (no actor header) --method tools/call --tool-name get_duty_contact --tool-arg household_id=hh_rao
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"error\":{\"code\":\"UNAUTHENTICATED_SESSION\",\"message\":\"No synthetic actor is bound to this session (send X-CareLoop-Actor)\"}}"
+    }
+  ],
+  "isError": true
+}
+{"error":{"code":"tool_is_error","message":"Tool 'get_duty_contact' returned isError:true."}}
+exit=5

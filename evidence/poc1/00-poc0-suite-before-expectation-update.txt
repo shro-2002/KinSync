@@ -1,0 +1,65 @@
+$ pnpm -s build:ui && vitest run
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (589.4 KiB)
+
+ RUN  v5.0.3 <repo>
+
+ ❯ test/e2e.test.ts (5 tests | 1 failed) 102ms
+   ❯ SDK client against CareLoop server (5)
+     × negotiates protocol version 2025-11-25 and exposes exactly one tool 54ms
+ ❯ test/conformance.test.ts (15 tests | 1 failed) 104ms
+   ❯ transports: Streamable HTTP (4)
+     × POST of a JSON-RPC request returns application/json or text/event-stream (MUST) 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC request returns application/json or text/event-stream (MUST)
+AssertionError: expected [ 'log_event', 'show_care_dashboard' ] to deeply equal [ 'log_event' ]
+
+- Expected
++ Received
+
+  [
+    "log_event",
++   "show_care_dashboard",
+  ]
+
+ ❯ test/conformance.test.ts:45:108
+     43|         const type = res.headers.get('content-type') ?? '';
+     44|         expect(type.includes('application/json') || type.includes('tex…
+     45|         expect((res.body as { result: { tools: Array<{ name: string }>…
+       |                                                                                                            ^
+     46|     });
+     47|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/e2e.test.ts > SDK client against CareLoop server > negotiates protocol version 2025-11-25 and exposes exactly one tool
+AssertionError: expected [ 'log_event', 'show_care_dashboard' ] to deeply equal [ 'log_event' ]
+
+- Expected
++ Received
+
+  [
+    "log_event",
++   "show_care_dashboard",
+  ]
+
+ ❯ test/e2e.test.ts:19:40
+     17|         expect(client.getNegotiatedProtocolVersion()).toBe(SPEC_VERSIO…
+     18|         const { tools } = await client.listTools();
+     19|         expect(tools.map(t => t.name)).toEqual(['log_event']);
+       |                                        ^
+     20|
+     21|         await client.close();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 18 passed (20)
+   Start at  00:10:45
+   Duration  355ms (import 50%, tests 40%, transform 10%, worker 1%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+exit=1

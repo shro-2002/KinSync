@@ -1,0 +1,12 @@
+M1 human-only check removed:
+      Tests  2 failed | 99 passed (101)
+M2 verbatim check removed:
+      Tests  1 failed | 100 passed (101)
+M3 model key passed through:
+      Tests  1 failed | 100 passed (101)
+M4 household not overridden:
+      Tests  1 failed | 100 passed (101)
+M5 SDK validation restored (wrapper bypassed):
+      Tests  4 failed | 97 passed (101)
+RESTORED:
+      Tests  101 passed (101)

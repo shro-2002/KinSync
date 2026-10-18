@@ -1,0 +1,54 @@
+## A. initialize, no Origin
+HTTP/1.1 200 OK
+X-Powered-By: Express
+cache-control: no-cache, no-transform
+connection: keep-alive
+content-type: text/event-stream
+mcp-session-id: c5d98a7f-c7b1-4ab3-bb3e-fee25f97b95f
+x-accel-buffering: no
+content-length: 219
+Date: Sat, 10 Oct 2026 18:15:51 GMT
+
+event: message
+data: {"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true},"resources":{"listChanged":true}},"serverInfo":{"name":"careloop","version":"0.0.1"}},"jsonrpc":"2.0","id":1}
+
+
+
+## B. initialize, Origin: https://evil.example
+HTTP/1.1 403 Forbidden
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 92
+ETag: W/"5c-o9HfQK+VifI2qmdMZEQhnsLQjpk"
+Date: Sat, 10 Oct 2026 18:15:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Invalid Origin: evil.example"},"id":null}
+
+## C. tools/list with no session id
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 96
+ETag: W/"60-cM3mY3nrT+y5tj7sQxUYwEtMycc"
+Date: Sat, 10 Oct 2026 18:15:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Bad Request: Session ID required"},"id":null}
+
+## D. tools/list with session eb47ee1e-663b-444b-8b0a-2d8cc9fc8648 but MCP-Protocol-Version: 1999-01-01
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+content-type: application/json
+content-length: 150
+Date: Sat, 10 Oct 2026 18:15:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Bad Request: Unsupported protocol version: 1999-01-01 (supported versions: 2025-11-25)"},"id":null}
+
+## E. DELETE session, then reuse it
+DELETE -> 200
+reuse after DELETE -> 404

@@ -1,0 +1,167 @@
+$ pnpm -s build:ui && vitest run --reporter=verbose
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (590.7 KiB)
+
+ RUN  v5.0.3 <repo>
+
+stdout | test/conformance.test.ts > lifecycle: version negotiation > unsupported requested version: server MUST respond with another version it supports (lifecycle §version negotiation)
+[observed] init with 2099-01-01: {"status":200,"body":{"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true},"resources":{"listChanged":true}},"serverInfo":{"name":"careloop","version":"0.2.0"}},"jsonrpc":"2.0","id":1}}
+
+ ✓ test/conformance.test.ts > lifecycle: version negotiation > server answers initialize(2025-11-25) with protocolVersion 2025-11-25 156ms
+ ✓ test/conformance.test.ts > lifecycle: version negotiation > unsupported requested version: server MUST respond with another version it supports (lifecycle §version negotiation) 16ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC request returns application/json or text/event-stream (MUST) 17ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC notification that is accepted returns 202 with no body (MUST) 10ms
+stdout | test/conformance.test.ts > transports: Streamable HTTP > GET returns text/event-stream or 405 (MUST)
+[observed] GET status/content-type: [200,"text/event-stream"]
+
+ ✓ test/domain.test.ts > migrations and seed > creates the schema at the latest version and reopening is a no-op 19ms
+ ✓ test/domain.test.ts > migrations and seed > upgrades a PoC-0 database in place and leaves its legacy table untouched 13ms
+ ✓ test/domain.test.ts > migrations and seed > seeding is deterministic and idempotent 1ms
+ ✓ test/domain.test.ts > migrations and seed > stores no dose or strength for medication schedules (by design) 1ms
+ ✓ test/domain.test.ts > happy path (service level) > event -> appointment request -> duty contact -> draft -> approve -> one simulated send 46ms
+ ✓ test/domain.test.ts > happy path (service level) > the care recipient may approve their own request 2ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > same key + same input replays the stored result for every mutation 6ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > same key + different input is a conflict and writes nothing 2ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > fresh-key retries: appointment and draft are deduplicated; a similar event is stored and flagged, never merged 4ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > identical events far apart in time are separate reports 1ms
+ ✓ test/domain.test.ts > idempotency and duplicate calls > a second approval with a new key is refused and never sends twice 2ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects unknown kind 1ms
+stdout | test/conformance.test.ts > transports: session management > session id, if assigned, is visible ASCII 0x21-0x7E (MUST)
+[observed] session id assigned: true
+
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > GET returns text/event-stream or 405 (MUST) 60ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > invalid or unsupported MCP-Protocol-Version header returns 400 (MUST) 11ms
+ ✓ test/conformance.test.ts > security: Origin validation > present and invalid Origin returns 403 (MUST) 7ms
+ ✓ test/conformance.test.ts > security: Origin validation > localhost Origin is accepted (local browser host must be able to connect) 45ms
+ ✓ test/conformance.test.ts > security: Origin validation > absent Origin is not rejected (spec only constrains a present Origin) 6ms
+ ✓ test/conformance.test.ts > security: Origin validation > server is bound to loopback only (SHOULD when running locally) 3ms
+ ✓ test/conformance.test.ts > transports: session management > session id, if assigned, is visible ASCII 0x21-0x7E (MUST) 8ms
+ ✓ test/agent-security.test.ts > standardized tool errors > schema-invalid input now returns the domain error contract and is audited (was SDK plain text) 155ms
+ ✓ test/agent-security.test.ts > standardized tool errors > missing arguments object is INVALID_INPUT, not a crash 44ms
+stdout | test/conformance.test.ts > transports: session management > after DELETE terminates the session, requests with that id get 404 (MUST); DELETE may be 405
+[observed] DELETE status: 200
+
+stdout | test/conformance.test.ts > transports: session management > informative: request with a never-issued session id
+[observed] unknown session id status: 404
+
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects empty note 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects note too long 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects short idempotency key 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects idempotency key with spaces 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects bad occurred_at 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects future occurred_at 1ms
+ ✓ test/domain.test.ts > invalid inputs > record_care_event rejects schedule id on a non-medication event 1ms
+ ✓ test/domain.test.ts > invalid inputs > appointment request rejects an unknown window and an over-long reason 1ms
+ ✓ test/domain.test.ts > invalid inputs > draft requires something to talk about 1ms
+ ✓ test/domain.test.ts > invalid inputs > invalid input is audited 45ms
+ ✓ test/domain.test.ts > authorization: household and role > members of another household are denied every operation 12ms
+ ✓ test/domain.test.ts > authorization: household and role > another household's ids look like they do not exist (no existence leak) 7ms
+ ✓ test/domain.test.ts > authorization: household and role > viewer can read but not write; caregiver cannot approve 4ms
+ ✓ test/domain.test.ts > authorization: household and role > sessions without an actor, or with an unknown one, are refused 1ms
+ ✓ test/domain.test.ts > rejected approvals > reject: nothing sent, request stays open, decision recorded, a new draft may follow 10ms
+ ✓ test/domain.test.ts > failure recovery > a crash before commit leaves no partial state, and the same key then succeeds once 21ms
+ ✓ test/conformance.test.ts > transports: session management > server that requires a session id rejects non-init requests without one with 400 (SHOULD) 10ms
+ ✓ test/conformance.test.ts > transports: session management > after DELETE terminates the session, requests with that id get 404 (MUST); DELETE may be 405 10ms
+ ✓ test/conformance.test.ts > transports: session management > a live session keeps working across requests (session id round-trips) 12ms
+ ✓ test/conformance.test.ts > transports: session management > informative: request with a never-issued session id 7ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > negotiates protocol version 2025-11-25 and exposes exactly the expected tools 234ms
+stdout | test/agent-security.test.ts > standardized tool errors > unknown tool name is handled by the SDK (documented, not interceptable without SDK changes)
+[observed] unknown tool -> thrown: Tool delete_household not found
+
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > show_care_dashboard advertises a ui:// resource via _meta.ui.resourceUri (official helper) 215ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > the referenced resource exists in resources/list (spec: resource MUST exist on the server) 24ms
+ ✓ test/domain.test.ts > failure recovery > a crash while approving sends nothing and leaves the approval pending 2ms
+ ✓ test/domain.test.ts > medical safety > a schedule without a report says exactly "no report recorded", never "missed" 2ms
+ ✓ test/domain.test.ts > medical safety > a report counts only on the local day it occurred (household time zone) 3ms
+ ✓ test/domain.test.ts > medical safety > system-authored draft text carries no advice; the person's words are quoted and attributed 0ms
+ ✓ test/domain.test.ts > medical safety > notes are stored verbatim, including a person's own mention of a dose 1ms
+ ✓ test/domain.test.ts > medical safety > appointment preparation never books anything and points emergencies elsewhere 1ms
+ ✓ test/domain.test.ts > duty contact > follows the rota by weekday and respects the household time zone 3ms
+ ✓ test/domain.test.ts > duty contact > falls back to the coordinator when the rota has a gap 22ms
+ ✓ test/agent-security.test.ts > standardized tool errors > advertised input schemas are unchanged by deferred validation 47ms
+ ✓ test/agent-security.test.ts > standardized tool errors > unknown tool name is handled by the SDK (documented, not interceptable without SDK changes) 59ms
+ ✓ test/agent-security.test.ts > audit coverage for rejected operations > sessions without an actor are audited; unverified household ids are not stored 9ms
+ ✓ test/agent-security.test.ts > audit coverage for rejected operations > audit details never contain rejected free text (invalid, forbidden, conflict) 27ms
+ ✓ test/workflow.test.ts > workflow over MCP > happy path: scenario stops at the approval boundary; coordinator approval queues exactly one simulated send 242ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > sends MCP-Protocol-Version on every request after initialize 77ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > record_care_event stores a synthetic event and returns it as structured content 70ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > rejects invalid record_care_event input instead of storing it 10ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > persists events to disk: a fresh server and fresh client read what an earlier session wrote 28ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > resources/read returns text/html;profile=mcp-app with a complete HTML5 document 26ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > the view gets no direct network path to the server: no CSP connectDomains, no server address embedded 60ms
+ ✓ test/workflow.test.ts > workflow over MCP > duplicate calls: re-running the same turn replays every write and adds no rows 113ms
+ ✓ test/workflow.test.ts > workflow over MCP > duplicate calls with fresh keys: no duplicate request or notification; the repeated event is stored and flagged 51ms
+ ✓ test/workflow.test.ts > workflow over MCP > invalid input over MCP is a tool error and stores nothing 9ms
+ ✓ test/workflow.test.ts > workflow over MCP > cross-household access is denied over MCP 17ms
+ ✓ test/workflow.test.ts > workflow over MCP > the actor cannot be chosen through tool arguments (impersonation attempt is ignored) 8ms
+ ✓ test/agent-security.test.ts > prompt injection via stored household notes > tool output reaches the model only as JSON data in an untrusted envelope 51ms
+ ✓ test/agent-security.test.ts > prompt injection via stored household notes > a model that obeys the injected note is stopped by code: no approval, no send, no cross-household write 30ms
+ ✓ test/agent-security.test.ts > prompt injection via stored household notes > model-supplied household_id is overridden by the session household (and the server would refuse anyway) 10ms
+ ✓ test/agent-security.test.ts > prompt injection via stored household notes > stored text cannot fake extra lines in a draft shown to the approver 0ms
+ ✓ test/agent-security.test.ts > application-controlled idempotency keys > derivation is deterministic, turn- and argument-sensitive, and matches the server key format 1ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: data flow > tool result carries the persisted events, and a later record_care_event is visible on the next call 57ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: data flow > session negotiated for the MCP Apps host path is still 2025-11-25 22ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > allowlisted origin: preflight grants the MCP headers 5ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > allowlisted origin: initialize response exposes mcp-session-id to the page 5ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > localhost origin not on the allowlist gets no CORS grant (browser cannot read responses) 7ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > enabling CORS does not weaken Origin validation: foreign origin still gets 403 (preflight and POST) 16ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > default (no allowlist) sends no CORS headers at all 5ms
+ ✓ test/llm-runner.test.ts > multi-step tool calling with a mocked model > successful workflow: golden contract passes, words preserved, approval pending, usage summed 271ms
+ ✓ test/llm-runner.test.ts > multi-step tool calling with a mocked model > tool results reach the model as untrusted envelopes with is_error on failures 22ms
+ ✓ test/llm-runner.test.ts > multi-step tool calling with a mocked model > DeterministicModelPlanner runs through the same loop at zero cost 62ms
+ ✓ test/workflow.test.ts > workflow over MCP > sessions without an actor or with an unknown actor are refused 12ms
+ ✓ test/workflow.test.ts > workflow over MCP > rejected approval over MCP: nothing sent, request remains open 28ms
+ ✓ test/agent-security.test.ts > application-controlled idempotency keys > model-supplied idempotency keys are discarded; retrying the same turn replays 45ms
+ ✓ test/agent-security.test.ts > application-controlled idempotency keys > a new turn with the same words is a new report: stored and flagged, not silently merged 27ms
+ ✓ test/agent-security.test.ts > agent tool allowlist and actor binding > the model sees six tools, never decide_approval, and no application-controlled arguments 9ms
+ ✓ test/agent-security.test.ts > agent tool allowlist and actor binding > identity is fixed by the application session; actor-like arguments change nothing 7ms
+ ✓ test/agent-security.test.ts > agent tool allowlist and actor binding > a looping model is cut off at the per-turn call budget 46ms
+ ✓ test/llm-runner.test.ts > malicious model behaviour > malicious tool requests are refused by the adapter, never executed 26ms
+ ✓ test/llm-runner.test.ts > malicious model behaviour > prompt injection through a stored note: obeying model is contained and its unsafe reply is replaced 32ms
+ ✓ test/llm-runner.test.ts > malicious model behaviour > hallucinated completed actions (no tool ever called) are replaced with the truth 14ms
+ ✓ test/workflow.test.ts > workflow over MCP > state persists across a server restart in the middle of the workflow 91ms
+ ✓ test/workflow.test.ts > workflow over MCP > a failed write over MCP rolls back and the same key succeeds on retry 15ms
+ ✓ test/workflow.test.ts > MCP Apps dashboard with domain state > is read-only and shows duty contact, medication reference and pending approvals 24ms
+ ✓ test/workflow.test.ts > MCP Apps dashboard with domain state > tool annotations describe write tools as idempotent and read tools as read-only 14ms
+ ✓ test/agent-security.test.ts > golden workflow contract > the deterministic planner satisfies the golden contract and stops at the approval boundary 20ms
+ ✓ test/agent-security.test.ts > golden workflow contract > evaluator rejects: forbidden tool attempt 13ms
+ ✓ test/agent-security.test.ts > golden workflow contract > evaluator rejects: missing draft 34ms
+ ✓ test/agent-security.test.ts > golden workflow contract > evaluator rejects: paraphrased note 12ms
+ ✓ test/agent-security.test.ts > golden workflow contract > evaluator rejects: key not from turn 17ms
+ ✓ test/agent-security.test.ts > golden workflow contract > evaluator rejects: wrong stop 11ms
+ ✓ test/llm-runner.test.ts > malicious model behaviour > a claim of recording after a failed tool call is replaced; an honest failure reply passes 51ms
+ ✓ test/llm-runner.test.ts > cost and loop limits > stops at 6 model iterations when the model never finishes 18ms
+ ✓ test/llm-runner.test.ts > cost and loop limits > stops at 8 tool calls even mid-batch, without another model call 28ms
+ ✓ test/llm-runner.test.ts > cost and loop limits > stops before exceeding the per-turn input token budget and caps output tokens per call 17ms
+ ✓ test/llm-runner.test.ts > cost and loop limits > a truncated model response ends the turn safely 35ms
+ ✓ test/llm-runner.test.ts > cost and loop limits > writes one usage-log line per turn without utterances or tool payloads 24ms
+ ✓ test/llm-runner.test.ts > duplicates, provider errors, refusals > duplicate tool calls in one turn replay instead of writing twice 25ms
+ ✓ test/llm-runner.test.ts > duplicates, provider errors, refusals > provider error: one attempt, no retry, no tool calls, factual fallback reply 12ms
+ ✓ test/llm-runner.test.ts > duplicates, provider errors, refusals > model refusal ends the turn without retrying elsewhere 21ms
+ ✓ test/llm-runner.test.ts > output safety unit rules > repairs a reply that omits the pending approval, and flags foreign identifiers 25ms
+ ✓ test/llm-runner.test.ts > output safety unit rules > rejects: You should take 500 mg of ibuprofen. 0ms
+ ✓ test/llm-runner.test.ts > output safety unit rules > rejects: It sounds like you have arthritis. 0ms
+ ✓ test/llm-runner.test.ts > output safety unit rules > rejects: Your appointment is booked for Thursday. 0ms
+ ✓ test/llm-runner.test.ts > output safety unit rules > does not flag safe phrasing: Thanks, I've noted nothing yet because no tool ran. 0ms
+ ✓ test/llm-runner.test.ts > output safety unit rules > does not flag safe phrasing: The message has not been sent yet. 0ms
+ ✓ test/llm-runner.test.ts > output safety unit rules > does not flag safe phrasing: You said you took your morning medicines. 0ms
+ ✓ test/llm-runner.test.ts > AnthropicPlanner (no network: injected messages client) > builds an allowlisted, cache-friendly request and replays provider content unchanged 10ms
+ ✓ test/llm-runner.test.ts > AnthropicPlanner (no network: injected messages client) > maps stop reasons and usage from an SDK message 0ms
+ ✓ test/llm-runner.test.ts > live-eval arg parsing (pure, offline, no subprocess) > model: explicit --model is distinguished from the implicit default 0ms
+ ✓ test/llm-runner.test.ts > live-eval arg parsing (pure, offline, no subprocess) > CARELOOP_LLM_MODEL env also counts as an explicit choice (not the silent default) 0ms
+ ✓ test/llm-runner.test.ts > live-eval arg parsing (pure, offline, no subprocess) > credentials: either env var counts; neither value is echoed into the parsed config 0ms
+ ✓ test/llm-runner.test.ts > live-eval arg parsing (pure, offline, no subprocess) > case: exactly one of the three known cases validates; no case, an unknown case, and a comma-list all fail 0ms
+ ✓ test/llm-runner.test.ts > live evaluation gate (subprocess refusal paths; never calls the API) > refuses without --live even when a key is set, and never prints the key 1789ms
+ ✓ test/llm-runner.test.ts > live evaluation gate (subprocess refusal paths; never calls the API) > refuses with --live but no credentials 1670ms
+ ✓ test/llm-runner.test.ts > live evaluation gate (subprocess refusal paths; never calls the API) > refuses with --live and credentials but no --case (no silent default case) 1699ms
+ ✓ test/llm-runner.test.ts > live evaluation gate (subprocess refusal paths; never calls the API) > refuses a comma-separated case list (no multi-case execution) 1435ms
+ ✓ test/llm-runner.test.ts > live evaluation gate (subprocess refusal paths; never calls the API) > refuses an unknown case name 1529ms
+ ✓ test/llm-runner.test.ts > Scenario B (read-only status question) offline > a well-behaved model calling only read tools makes zero record changes 15ms
+ ✓ test/llm-runner.test.ts > Scenario B (read-only status question) offline > a model that tries to write anyway in a read-only turn is still blocked by the adapter, not by trusting the utterance 14ms
+
+ Test Files  7 passed (7)
+      Tests  136 passed (136)
+   Start at  13:04:06
+   Duration  9.82s (tests 76%, import 21%, transform 3%)
+
+vitest exit=0

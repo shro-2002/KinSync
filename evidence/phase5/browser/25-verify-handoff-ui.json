@@ -1,0 +1,207 @@
+{
+  "when": "2026-10-14T16:32:15.566Z",
+  "server": "http://127.0.0.1:3335/mcp",
+  "results": [
+    {
+      "check": "spoken request became a PENDING_APPROVAL proposal (planner can only propose)",
+      "pass": true,
+      "detail": "I've prepared a proposal for Arjun to take over this task. A person needs to approve it, and Arjun needs to accept it, before anything changes. Nothing has been sent or arranged."
+    },
+    {
+      "check": "card shows the task in the person's words, requester, who is responsible now and who is proposed",
+      "pass": true,
+      "detail": "Awaiting approvalRequested by Ravi“I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?”Responsible now (on duty)Priya→Proposed to take overArjun✓ RequestedDone: Ravi as"
+    },
+    {
+      "check": "lifecycle reads Requested (done) -> Awaiting approval (in progress) -> acceptance -> Completed (not yet)",
+      "pass": true,
+      "detail": [
+        "done",
+        "current",
+        "todo",
+        "todo"
+      ]
+    },
+    {
+      "check": "simulated-actor switcher is visibly labeled SIMULATED, not authentication",
+      "pass": true,
+      "detail": "\n      Simulated identity\n      Demo only, not authentication. Acting as:\n      Arjun (caregiver)Meera (viewer)Priya (coordinator)Ravi (care recipient)\n      Switching people is a labeled demo aid. The real session is Priya's; the server re-checks who may act on every click and records the switch as \"simulated\".\n    "
+    },
+    {
+      "check": "starts as the session identity (Priya, coordinator): Approve and Reject enabled",
+      "pass": true
+    },
+    {
+      "check": "no Accept/Decline offered while approval is pending",
+      "pass": true
+    },
+    {
+      "check": "keyboard: Tab from Refresh reaches the identity switcher, with a visible focus ring",
+      "pass": true,
+      "detail": {
+        "tabs": 1
+      }
+    },
+    {
+      "check": "as Arjun (the recipient): Approve is disabled with an explanation",
+      "pass": true,
+      "detail": {
+        "disabled": true,
+        "title": "Only the care recipient or the coordinator can approve, and not the person who would take over. Arjun cannot."
+      }
+    },
+    {
+      "check": "forced approve as Arjun refused by the SERVER (FORBIDDEN); nothing changed",
+      "pass": true,
+      "detail": "✕ Server refused: FORBIDDEN - Role caregiver may not decide_handoff"
+    },
+    {
+      "check": "the refusal is in the audit trail as a denied decide_handoff by Arjun",
+      "pass": true
+    },
+    {
+      "check": "as Meera (viewer): Approve disabled; switching identity cleared the old error",
+      "pass": true
+    },
+    {
+      "check": "keyboard: Tab reaches Approve (visible focus ring) and Enter approves",
+      "pass": true,
+      "detail": {
+        "tabs": 1
+      }
+    },
+    {
+      "check": "approval recorded as Priya in her own (non-simulated) session",
+      "pass": true,
+      "detail": {
+        "event": "approve",
+        "who": "mem_priya",
+        "mode": "session",
+        "by": null
+      }
+    },
+    {
+      "check": "card: approved by Priya, but Arjun is not responsible until he accepts",
+      "pass": true
+    },
+    {
+      "check": "Approve/Reject are gone; Accept/Decline are shown",
+      "pass": true
+    },
+    {
+      "check": "as Priya (not the recipient): Accept disabled",
+      "pass": true
+    },
+    {
+      "check": "forced accept as Priya refused by the SERVER; still PENDING_ACCEPTANCE",
+      "pass": true
+    },
+    {
+      "check": "keyboard: Arjun (SIMULATED) tabs to Accept and presses Space: persisted as COMPLETED",
+      "pass": true,
+      "detail": {
+        "tabs": 1
+      }
+    },
+    {
+      "check": "completed card: all four stages done, Arjun now responsible, never claims care was given",
+      "pass": true,
+      "detail": "Completed agreementRequested by Ravi“I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?”Was responsible (on duty)Priya→Now responsible for this task (accepted)Arjun✓ R"
+    },
+    {
+      "check": "transitions: propose(Ravi) approve(Priya) accept(Arjun, simulated via Priya's session)",
+      "pass": true,
+      "detail": [
+        {
+          "event": "propose",
+          "who": "mem_ravi",
+          "mode": "session",
+          "by": null
+        },
+        {
+          "event": "approve",
+          "who": "mem_priya",
+          "mode": "session",
+          "by": null
+        },
+        {
+          "event": "accept",
+          "who": "mem_arjun",
+          "mode": "simulated",
+          "by": "mem_priya"
+        }
+      ]
+    },
+    {
+      "check": "nothing was sent: simulated outbox empty, no notification drafts",
+      "pass": true
+    },
+    {
+      "check": "after server restart + page reload the COMPLETED agreement and its 3-step audit trail are still shown",
+      "pass": true,
+      "detail": "Completed agreementRequested by Ravi“I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?”Was responsible (on duty)Priya→Now responsible for this task (accepted)Arjun✓ RequestedDone: Ravi asked for help✓ Awaiting approvalDone: Ap"
+    }
+  ],
+  "transitions": [
+    {
+      "event": "propose",
+      "who": "mem_ravi",
+      "mode": "session",
+      "by": null
+    },
+    {
+      "event": "approve",
+      "who": "mem_priya",
+      "mode": "session",
+      "by": null
+    },
+    {
+      "event": "accept",
+      "who": "mem_arjun",
+      "mode": "simulated",
+      "by": "mem_priya"
+    }
+  ],
+  "audit": [
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_ravi",
+      "action": "propose_handoff",
+      "target_id": "hof_1a9fcd664430",
+      "outcome": "ok",
+      "detail": "{\"key\":\"turn_ui0000000001.de6341efae517c6d085e9780\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_arjun",
+      "action": "decide_handoff",
+      "target_id": null,
+      "outcome": "denied",
+      "detail": "{\"reason\":\"role\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "decide_handoff",
+      "target_id": "hof_1a9fcd664430",
+      "outcome": "ok",
+      "detail": "{\"key\":\"ui:approve:hof_1a9fcd664430\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_priya",
+      "action": "respond_to_handoff",
+      "target_id": null,
+      "outcome": "denied",
+      "detail": "{\"key\":\"ui:accept:hof_1a9fcd664430\",\"code\":\"FORBIDDEN\"}"
+    },
+    {
+      "at": "2026-10-12T04:00:00.000Z",
+      "actor_member_id": "mem_arjun",
+      "action": "respond_to_handoff",
+      "target_id": "hof_1a9fcd664430",
+      "outcome": "ok",
+      "detail": "{\"key\":\"ui:accept:hof_1a9fcd664430\",\"simulated\":true,\"simulated_by\":\"mem_priya\"}"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+$ tsx scripts/live-eval.ts -- --provider ollama --case status
+Live eval (LOCAL, $0, single case, no retry, no fallback): provider=ollama model=llama3.1 (default) base_url=http://127.0.0.1:11434 case=status limits={"maxModelIterations":6,"maxToolCalls":8,"maxOutputTokensPerCall":2048,"maxInputTokensPerTurn":60000,"maxOutputTokensPerTurn":8000}
+case=status provider=ollama stop=completed reply=passed wall_clock_ms=4499 iterations=2 cost=$0 writes=none read_only_passed=true
+wrote evidence/phase3d/local/live-eval-ollama-status-2026-10-13T09-11-11-197Z.json

@@ -1,0 +1,17 @@
+$ pnpm -s build:ui && tsx scripts/verify-render.ts
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (598.2 KiB)
+PASS  view rendered inside a sandbox iframe (not the host page)  {"frameUrl":"about:blank"}
+PASS  view shows the events stored in SQLite  ["synthetic: Dad ate oatmeal","synthetic: Dad took 8am pills"]
+PASS  view shows the duty contact from the rota
+PASS  view shows the medication reference with neutral no-report wording
+PASS  view lists the pending approval
+PASS  initial data arrived via host tool-result notification
+PASS  host discovered the UI via MCP resources/read of the ui:// URI  [{"method":"initialize","protocolVersion":"2025-11-25"},{"method":"notifications/initialized","header":"2025-11-25"},{"method":"tools/list","header":"2025-11-25"},{"method":"resources/list","header":"2025-11-25"},{"method":"tools/call","tool":"show_care_dashboard","header":"2025-11-25"},{"method":"resources/read","uri":"ui://careloop/dashboard.html","header":"2025-11-25"},{"method":"tools/call","tool":"show_care_dashboard","header":"2025-11-25"},{"method":"resources/read","uri":"ui://careloop/dashboard.html","header":"2025-11-25"}]
+PASS  browser host requested protocol 2025-11-25 in initialize  {"method":"initialize","protocolVersion":"2025-11-25"}
+PASS  browser host sent MCP-Protocol-Version: 2025-11-25 on every post-init request  ["2025-11-25"]
+INFO  host initialize capabilities.extensions = null
+PASS  new record_care_event visible after view Refresh  ["synthetic NONCE-RENDER","synthetic: Dad ate oatmeal","synthetic: Dad took 8am pills"]
+PASS  refresh went app -> host -> tools/call on the MCP server  [{"method":"tools/call","tool":"show_care_dashboard","header":"2025-11-25"}]
+
+11/11 render checks passed

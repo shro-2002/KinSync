@@ -1,0 +1,162 @@
+{
+  "when": "2026-10-13T06:36:15.785Z",
+  "server": "http://127.0.0.1:3334/mcp",
+  "results": [
+    {
+      "check": "view rendered inside a sandbox iframe (not the host page)",
+      "pass": true,
+      "detail": {
+        "frameUrl": "about:blank"
+      }
+    },
+    {
+      "check": "view shows the events stored in SQLite",
+      "pass": true,
+      "detail": [
+        "synthetic: Dad ate oatmeal",
+        "synthetic: Dad took 8am pills"
+      ]
+    },
+    {
+      "check": "view shows the duty contact from the rota",
+      "pass": true
+    },
+    {
+      "check": "view shows the medication reference with neutral no-report wording",
+      "pass": true
+    },
+    {
+      "check": "view lists the pending approval",
+      "pass": true
+    },
+    {
+      "check": "initial data arrived via host tool-result notification",
+      "pass": true
+    },
+    {
+      "check": "host discovered the UI via MCP resources/read of the ui:// URI",
+      "pass": true,
+      "detail": [
+        {
+          "method": "initialize",
+          "protocolVersion": "2025-11-25"
+        },
+        {
+          "method": "notifications/initialized",
+          "header": "2025-11-25"
+        },
+        {
+          "method": "tools/list",
+          "header": "2025-11-25"
+        },
+        {
+          "method": "resources/list",
+          "header": "2025-11-25"
+        },
+        {
+          "method": "tools/call",
+          "tool": "show_care_dashboard",
+          "header": "2025-11-25"
+        },
+        {
+          "method": "resources/read",
+          "uri": "ui://careloop/dashboard.html",
+          "header": "2025-11-25"
+        },
+        {
+          "method": "tools/call",
+          "tool": "show_care_dashboard",
+          "header": "2025-11-25"
+        },
+        {
+          "method": "resources/read",
+          "uri": "ui://careloop/dashboard.html",
+          "header": "2025-11-25"
+        },
+        {
+          "method": "tools/call",
+          "tool": "show_care_dashboard",
+          "header": "2025-11-25"
+        }
+      ]
+    },
+    {
+      "check": "browser host requested protocol 2025-11-25 in initialize",
+      "pass": true,
+      "detail": {
+        "method": "initialize",
+        "protocolVersion": "2025-11-25"
+      }
+    },
+    {
+      "check": "browser host sent MCP-Protocol-Version: 2025-11-25 on every post-init request",
+      "pass": true,
+      "detail": [
+        "2025-11-25"
+      ]
+    },
+    {
+      "check": "new record_care_event visible after view Refresh",
+      "pass": true,
+      "detail": [
+        "synthetic NONCE-RENDER",
+        "synthetic: Dad ate oatmeal",
+        "synthetic: Dad took 8am pills"
+      ]
+    },
+    {
+      "check": "refresh went app -> host -> tools/call on the MCP server",
+      "pass": true,
+      "detail": [
+        {
+          "method": "tools/call",
+          "tool": "show_care_dashboard",
+          "header": "2025-11-25"
+        }
+      ]
+    }
+  ],
+  "sentMethods": [
+    {
+      "method": "initialize",
+      "protocolVersion": "2025-11-25"
+    },
+    {
+      "method": "notifications/initialized",
+      "header": "2025-11-25"
+    },
+    {
+      "method": "tools/list",
+      "header": "2025-11-25"
+    },
+    {
+      "method": "resources/list",
+      "header": "2025-11-25"
+    },
+    {
+      "method": "tools/call",
+      "tool": "show_care_dashboard",
+      "header": "2025-11-25"
+    },
+    {
+      "method": "resources/read",
+      "uri": "ui://careloop/dashboard.html",
+      "header": "2025-11-25"
+    },
+    {
+      "method": "tools/call",
+      "tool": "show_care_dashboard",
+      "header": "2025-11-25"
+    },
+    {
+      "method": "resources/read",
+      "uri": "ui://careloop/dashboard.html",
+      "header": "2025-11-25"
+    },
+    {
+      "method": "tools/call",
+      "tool": "show_care_dashboard",
+      "header": "2025-11-25"
+    }
+  ]
+}

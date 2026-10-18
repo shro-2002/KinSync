@@ -1,0 +1,4 @@
+# pnpm 11 build-script policy: esbuild works without its postinstall (it only validates the binary), so no dependency
+# install scripts run at all. Declaring it here stops `pnpm install` exiting 1 with ERR_PNPM_IGNORED_BUILDS on a fresh clone.
+allowBuilds:
+  esbuild: false

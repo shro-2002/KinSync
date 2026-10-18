@@ -1,0 +1,59 @@
+$ pnpm -s build:ui && vitest run --reporter=verbose
+$ tsx scripts/build-ui.ts
+[build-ui] wrote dist/ui/dashboard.html (589.4 KiB)
+
+ RUN  v5.0.3 <repo>
+
+stdout | test/conformance.test.ts > lifecycle: version negotiation > unsupported requested version: server MUST respond with another version it supports (lifecycle §version negotiation)
+[observed] init with 2099-01-01: {"status":200,"body":{"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true},"resources":{"listChanged":true}},"serverInfo":{"name":"careloop","version":"0.0.1"}},"jsonrpc":"2.0","id":1}}
+
+stdout | test/conformance.test.ts > transports: Streamable HTTP > GET returns text/event-stream or 405 (MUST)
+[observed] GET status/content-type: [200,"text/event-stream"]
+
+stdout | test/conformance.test.ts > transports: session management > session id, if assigned, is visible ASCII 0x21-0x7E (MUST)
+[observed] session id assigned: true
+
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > negotiates protocol version 2025-11-25 and exposes exactly the expected tools 58ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > sends MCP-Protocol-Version on every request after initialize 16ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > log_event stores a synthetic event and returns it as structured content 16ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > rejects invalid log_event input instead of storing it 7ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > show_care_dashboard advertises a ui:// resource via _meta.ui.resourceUri (official helper) 59ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > the referenced resource exists in resources/list (spec: resource MUST exist on the server) 12ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > resources/read returns text/html;profile=mcp-app with a complete HTML5 document 14ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: resource registration and discovery > the view gets no direct network path to the server: no CSP connectDomains, no server address embedded 12ms
+ ✓ test/conformance.test.ts > lifecycle: version negotiation > server answers initialize(2025-11-25) with protocolVersion 2025-11-25 43ms
+ ✓ test/conformance.test.ts > lifecycle: version negotiation > unsupported requested version: server MUST respond with another version it supports (lifecycle §version negotiation) 11ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC request returns application/json or text/event-stream (MUST) 12ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > POST of a JSON-RPC notification that is accepted returns 202 with no body (MUST) 4ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > GET returns text/event-stream or 405 (MUST) 8ms
+ ✓ test/conformance.test.ts > transports: Streamable HTTP > invalid or unsupported MCP-Protocol-Version header returns 400 (MUST) 5ms
+ ✓ test/conformance.test.ts > security: Origin validation > present and invalid Origin returns 403 (MUST) 3ms
+ ✓ test/conformance.test.ts > security: Origin validation > localhost Origin is accepted (local browser host must be able to connect) 3ms
+ ✓ test/conformance.test.ts > security: Origin validation > absent Origin is not rejected (spec only constrains a present Origin) 3ms
+ ✓ test/conformance.test.ts > security: Origin validation > server is bound to loopback only (SHOULD when running locally) 1ms
+ ✓ test/conformance.test.ts > transports: session management > session id, if assigned, is visible ASCII 0x21-0x7E (MUST) 3ms
+ ✓ test/e2e.test.ts > SDK client against CareLoop server > persists events to disk: a fresh server and fresh client read what an earlier session wrote 11ms
+stdout | test/conformance.test.ts > transports: session management > after DELETE terminates the session, requests with that id get 404 (MUST); DELETE may be 405
+[observed] DELETE status: 200
+
+stdout | test/conformance.test.ts > transports: session management > informative: request with a never-issued session id
+[observed] unknown session id status: 404
+
+ ✓ test/conformance.test.ts > transports: session management > server that requires a session id rejects non-init requests without one with 400 (SHOULD) 4ms
+ ✓ test/conformance.test.ts > transports: session management > after DELETE terminates the session, requests with that id get 404 (MUST); DELETE may be 405 6ms
+ ✓ test/conformance.test.ts > transports: session management > a live session keeps working across requests (session id round-trips) 4ms
+ ✓ test/conformance.test.ts > transports: session management > informative: request with a never-issued session id 2ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: data flow > tool result carries the persisted events, and a later log_event is visible on the next call 11ms
+ ✓ test/mcp-apps.test.ts > MCP Apps: data flow > session negotiated for the MCP Apps host path is still 2025-11-25 5ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > allowlisted origin: preflight grants the MCP headers 2ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > allowlisted origin: initialize response exposes mcp-session-id to the page 2ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > localhost origin not on the allowlist gets no CORS grant (browser cannot read responses) 1ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > enabling CORS does not weaken Origin validation: foreign origin still gets 403 (preflight and POST) 2ms
+ ✓ test/mcp-apps.test.ts > security: CORS allowlist for browser hosts > default (no allowlist) sends no CORS headers at all 2ms
+
+ Test Files  3 passed (3)
+      Tests  31 passed (31)
+   Start at  00:17:48
+   Duration  386ms (import 48%, tests 42%, transform 10%, worker 1%)
+
+vitest exit=0

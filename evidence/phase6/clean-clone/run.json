@@ -1,0 +1,17 @@
+{
+  "when": "2026-10-14T17:10:19.896Z",
+  "results": [
+    {
+      "check": "Ravi's request is on the dashboard as Awaiting approval",
+      "pass": true
+    },
+    {
+      "check": "Priya approved -> Awaiting recipient acceptance",
+      "pass": true
+    },
+    {
+      "check": "Arjun accepted -> Completed agreement, audit shows simulated accept, Arjun now responsible",
+      "pass": true
+    }
+  ]
+}

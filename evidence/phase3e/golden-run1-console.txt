@@ -1,0 +1,4 @@
+$ tsx scripts/live-eval.ts -- --provider ollama --case golden
+Live eval (LOCAL, $0, single case, no retry, no fallback): provider=ollama model=llama3.1 (default) base_url=http://127.0.0.1:11434 case=golden limits={"maxModelIterations":6,"maxToolCalls":8,"maxOutputTokensPerCall":2048,"maxInputTokensPerTurn":60000,"maxOutputTokensPerTurn":8000}
+case=golden provider=ollama stop=completed reply=replaced wall_clock_ms=16126 iterations=2 cost=$0 writes=care_events
+wrote evidence/phase3d/local/live-eval-ollama-golden-2026-10-13T09-06-45-506Z.json

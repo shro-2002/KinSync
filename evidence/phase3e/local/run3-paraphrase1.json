@@ -1,0 +1,166 @@
+{
+  "case": "golden",
+  "provider": "ollama",
+  "model": "llama3.1",
+  "effort": "medium",
+  "limits": {
+    "maxModelIterations": 6,
+    "maxToolCalls": 8,
+    "maxOutputTokensPerCall": 2048,
+    "maxInputTokensPerTurn": 60000,
+    "maxOutputTokensPerTurn": 8000
+  },
+  "result": {
+    "case": "golden",
+    "utterance": "I just had my morning tablets. Could you set up a doctor visit for me? My knee has been sore for a couple of days.",
+    "provider": "ollama",
+    "model": "llama3.1",
+    "model_explicit": false,
+    "wall_clock_ms": 8489,
+    "stop": "completed",
+    "reply": {
+      "action": "replaced",
+      "violations": [
+        {
+          "rule": "unconfirmed_claim",
+          "detail": "draft_caregiver_notification: A doctor visit request for this week has been drafted due to your sore knee."
+        }
+      ],
+      "text": "I've recorded what you told me. I've prepared an appointment request for the family. Nothing has been booked.",
+      "originalText": "A doctor visit request for this week has been drafted due to your sore knee.",
+      "source": "model"
+    },
+    "golden": {
+      "contract": "careloop.golden/medication-appointment/v1",
+      "pass": false,
+      "violations": [
+        "stop_reason completed != awaiting_approval",
+        "missing or out-of-order: get_duty_contact, draft_caregiver_notification",
+        "record_care_event.medication_schedule_id = undefined, expected \"med_ravi_morning\""
+      ]
+    },
+    "read_only_check": null,
+    "record_counts": {
+      "before": {
+        "care_events": 0,
+        "appointment_requests": 0,
+        "notification_drafts": 0,
+        "approvals": 0,
+        "simulated_outbox": 0
+      },
+      "after": {
+        "care_events": 1,
+        "appointment_requests": 1,
+        "notification_drafts": 0,
+        "approvals": 0,
+        "simulated_outbox": 0
+      }
+    },
+    "tool_calls": [
+      {
+        "tool": "record_care_event",
+        "decision": "executed",
+        "outcome": "ok"
+      },
+      {
+        "tool": "prepare_appointment_request",
+        "decision": "executed",
+        "outcome": "ok"
+      }
+    ],
+    "model_iterations": 2,
+    "iteration_latencies_ms": [
+      5137,
+      3304
+    ],
+    "usage": {
+      "iterations": [
+        {
+          "iteration": 1,
+          "model": "llama3.1",
+          "stop": "tool_use",
+          "toolCalls": 2,
+          "latencyMs": 5137,
+          "inputTokens": 1140,
+          "outputTokens": 91,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        {
+          "iteration": 2,
+          "model": "llama3.1",
+          "stop": "end_turn",
+          "toolCalls": 0,
+          "latencyMs": 3304,
+          "inputTokens": 719,
+          "outputTokens": 17,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        }
+      ],
+      "totals": {
+        "inputTokens": 1859,
+        "outputTokens": 108,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0
+      },
+      "estimatedCostUsd": null
+    },
+    "provider_error": null,
+    "trace": {
+      "format": "careloop.tool-trace/v1",
+      "turn_id": "turn_bdf9fea23a15468c99970c3459985821",
+      "actor_member_id": "mem_ravi",
+      "household_id": "hh_rao",
+      "utterance_sha256": "e6ea8f87c7806e419bcc78142a30bdfc2f9c16c4491ebc918051b7bf52afc3a4",
+      "planner": "ollama/chat-tool-use/v1",
+      "steps": [
+        {
+          "seq": 1,
+          "tool": "record_care_event",
+          "model_args": {
+            "kind": "medication",
+            "note": "I just had my morning tablets.",
+            "subject_member_id": "Ravi"
+          },
+          "effective_args": {
+            "kind": "medication",
+            "note": "I just had my morning tablets.",
+            "subject_member_id": "Ravi",
+            "household_id": "hh_rao",
+            "idempotency_key": "turn_bdf9fea23a15468c99970c3459985821.38e93599a151bd444baf0594"
+          },
+          "idempotency_key": "turn_bdf9fea23a15468c99970c3459985821.38e93599a151bd444baf0594",
+          "decision": "executed",
+          "policy_reason": null,
+          "discarded_args": [],
+          "outcome": "ok",
+          "error_code": null
+        },
+        {
+          "seq": 2,
+          "tool": "prepare_appointment_request",
+          "model_args": {
+            "preferred_window": "this_week",
+            "provider_label": "",
+            "reason_as_reported": "My knee has been sore for a couple of days.",
+            "related_event_id": ""
+          },
+          "effective_args": {
+            "preferred_window": "this_week",
+            "reason_as_reported": "My knee has been sore for a couple of days.",
+            "household_id": "hh_rao",
+            "idempotency_key": "turn_bdf9fea23a15468c99970c3459985821.e364672bea0268cbd0c3573f"
+          },
+          "idempotency_key": "turn_bdf9fea23a15468c99970c3459985821.e364672bea0268cbd0c3573f",
+          "decision": "executed",
+          "policy_reason": null,
+          "discarded_args": [],
+          "outcome": "ok",
+          "error_code": null
+        }
+      ],
+      "stop_reason": "completed"
+    }
+  }
+}
