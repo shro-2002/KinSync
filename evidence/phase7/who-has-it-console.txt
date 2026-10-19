@@ -1,0 +1,53 @@
+$ tsx scripts/who-has-it-demo.ts
+KinSync "Who's got Thursday?" -- SIMULATED Alexa+ workflow (not native Alexa+). Synthetic data. Rule-based planner (not an LLM).
+
+== 1-3. Before anyone has asked for help
+  [SIMULATED ALEXA+] meera: "Who's taking Dad to the clinic Thursday?"
+  MCP calls: get_household_status, get_handoffs (read-only; handoff rows unchanged: true)
+  KinSync: "There is no handoff or agreement recorded for Ravi's clinic on Thursday, so I can't say who is responsible. I won't guess."
+    [PASS] question used read tools only and changed no state
+    [PASS] no record -> refuses to name anyone
+
+== 4-6. Ravi asks for Arjun to take over (proposal only)
+  ravi -> propose_handoff: PENDING_APPROVAL
+  [SIMULATED ALEXA+] meera: "Who's taking Dad to the clinic Thursday?"
+  MCP calls: get_household_status, get_handoffs (read-only; handoff rows unchanged: true)
+  KinSync: "Priya is still responsible. Ravi asked for Arjun to take over, but nobody has approved that yet."
+    [PASS] question used read tools only and changed no state
+    [PASS] pending approval -> Priya is still responsible
+
+== 7-9. Priya approves -- Arjun has been asked, he has not said yes
+  priya -> decide_handoff: PENDING_ACCEPTANCE
+  [SIMULATED ALEXA+] meera: "Who's taking Dad Thursday?"
+  MCP calls: get_household_status, get_handoffs (read-only; handoff rows unchanged: true)
+  KinSync: "Priya still has it. Priya approved asking Arjun, but Arjun hasn't said yes yet, so nothing has moved."
+    [PASS] question used read tools only and changed no state
+    [PASS] approved -> Priya STILL has it; Arjun hasn't said yes
+
+== 10-12. Arjun accepts
+  arjun -> respond_to_handoff: COMPLETED
+  [SIMULATED ALEXA+] meera: "Who's taking Dad Thursday?"
+  MCP calls: get_household_status, get_handoffs (read-only; handoff rows unchanged: true)
+  KinSync: "Arjun accepted the handoff. Arjun is now listed as responsible for it. That is a family agreement, not proof the visit happened."
+    [PASS] question used read tools only and changed no state
+    [PASS] accepted -> Arjun is now listed as responsible
+
+== 14. Restart the server; ask again
+  server stopped and started again on the same database file -> http://127.0.0.1:55723/mcp
+  [SIMULATED ALEXA+] meera: "Who's taking Dad Thursday?"
+  MCP calls: get_household_status, get_handoffs (read-only; handoff rows unchanged: true)
+  KinSync: "Arjun accepted the handoff. Arjun is now listed as responsible for it. That is a family agreement, not proof the visit happened."
+    [PASS] question used read tools only and changed no state
+    [PASS] after restart the answer is identical
+
+== 13. Separate database: Priya approves, Arjun declines
+  ravi -> propose_handoff: PENDING_APPROVAL
+  priya -> decide_handoff: PENDING_ACCEPTANCE
+  arjun -> respond_to_handoff: DECLINED
+  [SIMULATED ALEXA+] meera: "Who's taking Dad to the clinic Thursday?"
+  MCP calls: get_household_status, get_handoffs (read-only; handoff rows unchanged: true)
+  KinSync: "The handoff didn't go through: Arjun said no. Priya remains responsible."
+    [PASS] question used read tools only and changed no state
+    [PASS] declined -> Priya remains responsible
+
+12/12 checks passed

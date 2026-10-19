@@ -13,6 +13,7 @@
     "verify:handoff-ui": "pnpm -s build:ui && tsx scripts/verify-handoff-ui.ts",
     "demo": "pnpm -s build:ui && tsx scripts/demo.ts",
     "handoff:demo": "tsx scripts/handoff-demo.ts",
+    "who:demo": "tsx scripts/who-has-it-demo.ts",
     "handoff:ollama": "tsx scripts/handoff-ollama.ts",
     "scenario": "tsx scripts/run-scenario.ts",
     "golden": "tsx scripts/golden-trace.ts",

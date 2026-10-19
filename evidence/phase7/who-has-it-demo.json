@@ -1,0 +1,195 @@
+{
+  "when": "2026-10-19T19:32:23.842Z",
+  "simulated_alexa": true,
+  "synthetic_data": true,
+  "checks": [
+    {
+      "check": "question used read tools only and changed no state",
+      "pass": true
+    },
+    {
+      "check": "no record -> refuses to name anyone",
+      "pass": true
+    },
+    {
+      "check": "question used read tools only and changed no state",
+      "pass": true
+    },
+    {
+      "check": "pending approval -> Priya is still responsible",
+      "pass": true
+    },
+    {
+      "check": "question used read tools only and changed no state",
+      "pass": true
+    },
+    {
+      "check": "approved -> Priya STILL has it; Arjun hasn't said yes",
+      "pass": true
+    },
+    {
+      "check": "question used read tools only and changed no state",
+      "pass": true
+    },
+    {
+      "check": "accepted -> Arjun is now listed as responsible",
+      "pass": true
+    },
+    {
+      "check": "question used read tools only and changed no state",
+      "pass": true
+    },
+    {
+      "check": "after restart the answer is identical",
+      "pass": true
+    },
+    {
+      "check": "question used read tools only and changed no state",
+      "pass": true
+    },
+    {
+      "check": "declined -> Priya remains responsible",
+      "pass": true
+    }
+  ],
+  "log": [
+    {
+      "question": "Who's taking Dad to the clinic Thursday?",
+      "asker": "mem_meera",
+      "tools": [
+        "get_household_status",
+        "get_handoffs"
+      ],
+      "reply": "There is no handoff or agreement recorded for Ravi's clinic on Thursday, so I can't say who is responsible. I won't guess.",
+      "safety": "passed",
+      "state_unchanged": true
+    },
+    {
+      "actor": "mem_ravi",
+      "tool": "propose_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "idempotency_key": "who:propose",
+        "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+        "proposed_recipient": "mem_arjun"
+      },
+      "status": "PENDING_APPROVAL",
+      "error": null
+    },
+    {
+      "question": "Who's taking Dad to the clinic Thursday?",
+      "asker": "mem_meera",
+      "tools": [
+        "get_household_status",
+        "get_handoffs"
+      ],
+      "reply": "Priya is still responsible. Ravi asked for Arjun to take over, but nobody has approved that yet.",
+      "safety": "passed",
+      "state_unchanged": true
+    },
+    {
+      "actor": "mem_priya",
+      "tool": "decide_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "idempotency_key": "who:approve",
+        "handoff_id": "hof_ae89d461c9ce",
+        "decision": "approve"
+      },
+      "status": "PENDING_ACCEPTANCE",
+      "error": null
+    },
+    {
+      "question": "Who's taking Dad Thursday?",
+      "asker": "mem_meera",
+      "tools": [
+        "get_household_status",
+        "get_handoffs"
+      ],
+      "reply": "Priya still has it. Priya approved asking Arjun, but Arjun hasn't said yes yet, so nothing has moved.",
+      "safety": "passed",
+      "state_unchanged": true
+    },
+    {
+      "actor": "mem_arjun",
+      "tool": "respond_to_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "idempotency_key": "who:accept",
+        "handoff_id": "hof_ae89d461c9ce",
+        "response": "accept"
+      },
+      "status": "COMPLETED",
+      "error": null
+    },
+    {
+      "question": "Who's taking Dad Thursday?",
+      "asker": "mem_meera",
+      "tools": [
+        "get_household_status",
+        "get_handoffs"
+      ],
+      "reply": "Arjun accepted the handoff. Arjun is now listed as responsible for it. That is a family agreement, not proof the visit happened.",
+      "safety": "passed",
+      "state_unchanged": true
+    },
+    {
+      "question": "Who's taking Dad Thursday?",
+      "asker": "mem_meera",
+      "tools": [
+        "get_household_status",
+        "get_handoffs"
+      ],
+      "reply": "Arjun accepted the handoff. Arjun is now listed as responsible for it. That is a family agreement, not proof the visit happened.",
+      "safety": "passed",
+      "state_unchanged": true
+    },
+    {
+      "actor": "mem_ravi",
+      "tool": "propose_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "idempotency_key": "who:propose",
+        "task_description": "I need help getting to my clinic visit on Thursday. Can Arjun take over from Priya?",
+        "proposed_recipient": "mem_arjun"
+      },
+      "status": "PENDING_APPROVAL",
+      "error": null
+    },
+    {
+      "actor": "mem_priya",
+      "tool": "decide_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "idempotency_key": "who:approve",
+        "handoff_id": "hof_ae89d461c9ce",
+        "decision": "approve"
+      },
+      "status": "PENDING_ACCEPTANCE",
+      "error": null
+    },
+    {
+      "actor": "mem_arjun",
+      "tool": "respond_to_handoff",
+      "args": {
+        "household_id": "hh_rao",
+        "idempotency_key": "who:decline",
+        "handoff_id": "hof_ae89d461c9ce",
+        "response": "decline"
+      },
+      "status": "DECLINED",
+      "error": null
+    },
+    {
+      "question": "Who's taking Dad to the clinic Thursday?",
+      "asker": "mem_meera",
+      "tools": [
+        "get_household_status",
+        "get_handoffs"
+      ],
+      "reply": "The handoff didn't go through: Arjun said no. Priya remains responsible.",
+      "safety": "passed",
+      "state_unchanged": true
+    }
+  ]
+}

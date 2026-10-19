@@ -40,6 +40,19 @@ A request can be refused in two different places, and the two are recorded diffe
 
 Both layers are exercised by a test that runs a *deliberately compromised* planner against an instruction planted in household data (`test/agent-security.test.ts`). It obeys the injected note and tries to approve every pending approval, write to another household, and send an SMS. All three are refused — `HUMAN_ONLY_TOOL`, `VERBATIM_REQUIRED:note`, `TOOL_NOT_ALLOWED` — the outbox stays empty, the approval stays `pending`, and no row is written to the other household. The test asserts the approval attempt produced **no** server audit entry, precisely because the adapter stopped it before the wire.
 
+### "Who's taking Dad Thursday?" — asking, not assuming
+
+Any household member can ask who is responsible. A deterministic, read-only planner (not an LLM) calls only `get_household_status` and `get_handoffs`, and answers from the persisted records (`src/agent/responsibility-planner.ts`). Real output from `pnpm who:demo` (simulated Alexa+ turn, synthetic data):
+
+| Recorded state | Answer |
+|---|---|
+| Nothing recorded | "There is no handoff or agreement recorded for Ravi's clinic on Thursday, so I can't say who is responsible. I won't guess." |
+| Approved, awaiting Arjun | "Priya still has it. Priya approved asking Arjun, but Arjun hasn't said yes yet, so nothing has moved." |
+| Arjun accepted | "Arjun accepted the handoff. Arjun is now listed as responsible for it. That is a family agreement, not proof the visit happened." |
+| Declined | "The handoff didn't go through: Arjun said no. Priya remains responsible." |
+
+Every turn is checked to change no state. Separately, output safety (`src/agent/output-safety.ts`) replaces any reply that says "accepted" unless the server returned `COMPLETED` in that same turn. Tests: `test/responsibility.test.ts`. Evidence: [`evidence/phase7/`](evidence/phase7/).
+
 Timed walkthrough: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). Evidence: [docs/PHASE5_DEMO_REPORT.md](docs/PHASE5_DEMO_REPORT.md).
 
 ### See it working (latest evidence: Phase 6A, from a clean clone)
@@ -111,10 +124,11 @@ Identity is **synthetic**: each MCP session carries a member id in the `X-CareLo
 
 ```bash
 pnpm typecheck
-pnpm test                          # 221 tests: domain, MCP, conformance, agent security, handoff (mocked model; no network)
+pnpm test                          # 235 tests: domain, MCP, conformance, agent security, handoff (mocked model; no network)
 pnpm scenario                      # 17 checks: original medication + appointment workflow over MCP
 pnpm golden && pnpm agent:offline  # golden trace contract for the deterministic planner
 pnpm handoff:demo                  # 14 checks: full handoff over real per-person MCP sessions, incl. restart
+pnpm who:demo                      # 12 checks: "who has it?" answered from persisted state at every stage, incl. restart
 pnpm verify:render                 # 11 checks: dashboard renders in the official MCP Apps host (Chromium)
 pnpm verify:handoff-ui             # 22 checks: full handoff through the real dashboard controls, keyboard-only steps, restart
 # With `pnpm demo` running in another terminal: pnpm exec tsx scripts/verify-demo-run.ts  (then --after-restart after `pnpm demo -- --keep`)
