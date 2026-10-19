@@ -51,7 +51,7 @@ Any household member can ask who is responsible. A deterministic, read-only plan
 | Arjun accepted | "Arjun accepted the handoff. Arjun is now listed as responsible for it. That is a family agreement, not proof the visit happened." |
 | Declined | "The handoff didn't go through: Arjun said no. Priya remains responsible." |
 
-Every turn is checked to change no state. Separately, output safety (`src/agent/output-safety.ts`) replaces any reply that says "accepted" unless the server returned `COMPLETED` in that same turn. Tests: `test/responsibility.test.ts`. Evidence: [`evidence/phase7/`](evidence/phase7/).
+Ask it against a running `pnpm demo` with `pnpm ask "Who's taking Dad Thursday?"` (a thin print wrapper over the same planner, `scripts/ask.ts`). Every turn is checked to change no state. Separately, output safety (`src/agent/output-safety.ts`) replaces any reply that says "accepted" unless the server returned `COMPLETED` in that same turn. Tests: `test/responsibility.test.ts`. Evidence: [`evidence/phase7/`](evidence/phase7/).
 
 Timed walkthrough: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). Evidence: [docs/PHASE5_DEMO_REPORT.md](docs/PHASE5_DEMO_REPORT.md).
 
@@ -124,7 +124,7 @@ Identity is **synthetic**: each MCP session carries a member id in the `X-CareLo
 
 ```bash
 pnpm typecheck
-pnpm test                          # 235 tests: domain, MCP, conformance, agent security, handoff (mocked model; no network)
+pnpm test                          # 236 tests: domain, MCP, conformance, agent security, handoff (mocked model; no network)
 pnpm scenario                      # 17 checks: original medication + appointment workflow over MCP
 pnpm golden && pnpm agent:offline  # golden trace contract for the deterministic planner
 pnpm handoff:demo                  # 14 checks: full handoff over real per-person MCP sessions, incl. restart

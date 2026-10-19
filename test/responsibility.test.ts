@@ -1,4 +1,7 @@
 /** "Who's taking Dad to the clinic Thursday?" answered from persisted handoff state over real MCP sessions; read-only. */
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+
 import type { Client } from '@modelcontextprotocol/client';
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -102,6 +105,21 @@ describe("who's got Thursday? over MCP (read-only)", () => {
         harness = await startHarness(path);
         expect(await ask()).toBe(before);
     });
+});
+
+describe('pnpm ask (thin print wrapper over the same read-only planner)', () => {
+    it("prints the question, the read-only MCP calls, and the server's real answer, and changes nothing", async () => {
+        harness = await startHarness();
+        const id = await propose();
+        await decide(id, 'approve');
+        const before = snapshot();
+        // Async on purpose: the server under test lives in this process, so a blocking spawn would starve it.
+        const { stdout: out } = await promisify(execFile)('pnpm', ['exec', 'tsx', 'scripts/ask.ts', "Who's taking Dad Thursday?", '--url', harness.url, '--as', 'mem_priya'], { encoding: 'utf8', env: { PATH: process.env.PATH, HOME: process.env.HOME } });
+        expect(out).toContain('[SIMULATED ALEXA+ - typed question] "Who\'s taking Dad Thursday?"');
+        expect(out).toContain('MCP calls: get_household_status, get_handoffs  (read-only: yes)');
+        expect(out).toContain(`KinSync: "${await ask("Who's taking Dad Thursday?", 'mem_priya')}"`);
+        expect(snapshot()).toBe(before);
+    }, 60_000);
 });
 
 describe('second layer: output safety will not let any planner claim acceptance the server has not recorded', () => {
