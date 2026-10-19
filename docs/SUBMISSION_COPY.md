@@ -30,7 +30,7 @@ A **self-hosted MCP server** implementing **MCP spec 2025-11-25 over Streamable 
 - Every mutation runs in one SQLite transaction with its idempotency record and audit row.
 
 ### The model boundary
-An AI planner can propose a handoff and read household state. It can never approve one, accept one, or send anything — those tools are not merely restricted, they are **never advertised to the model**, and the adapter refuses them in code before any request is sent.
+An AI planner can propose a handoff and read household state. It can never approve one, accept one, or send anything — through KinSync's adapter those tools are not merely restricted: they are never offered to the planner, and the adapter refuses them in code before any request is sent. (The MCP server itself still lists them for any client, and it has no production authentication; see the README.)
 
 Requests are refused in two distinct places, and the two are recorded differently:
 

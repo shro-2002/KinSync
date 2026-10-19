@@ -4,7 +4,7 @@
 
 When a family shares care, the dangerous moment is not the task. It is the handover: two people each believing the other has it. KinSync makes that transfer explicit. A care task moves from one household member to another only when a human approves it **and** the named recipient separately accepts it. Until both have happened, the original person is still responsible, and the system says so in those words.
 
-The second half of the design is the boundary around the model: an AI planner can *propose* a handoff and read household state. It can never approve one, never accept one on someone's behalf, and never send anything. That is enforced in code, not in prompt text.
+The second half of the design is the boundary around the model: an AI planner running through KinSync's `AgentAdapter` can *propose* a handoff and read household state. It can never approve one, never accept one on someone's behalf, and never send anything. That is enforced in code, not in prompt text. Scope of that claim: the restriction lives in the adapter. The MCP server itself lists `decide_handoff` and `respond_to_handoff` for any connected client and cannot tell a human click from a model call under the same session identity, so a generic MCP host wired straight to this server would not get the same protection. A production deployment needs real per-user authentication (not built here).
 
 Built for the Alexa+ track of the Amazon Developer Hackathon 2026. The codebase was created during the submission period (first work 2026-10-05) and still carries its original internal name, `careloop` — the package name, module names and database file are unchanged; KinSync is the product name.
 
